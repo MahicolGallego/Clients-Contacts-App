@@ -15,7 +15,8 @@ interface DynamicTextInputProps {
     | 'ascii-capable'
     | 'visible-password';
   secureTextEntry?: boolean;
-  icons?: IconsWithAction[];
+  icon?: string;
+  iconsWithAction?: IconsWithAction[];
 }
 
 interface IconsWithAction {
@@ -23,11 +24,15 @@ interface IconsWithAction {
   action: () => void;
 }
 
-const IconContainer = ({icons}: {icons: IconsWithAction[]}) => {
+const IconsWithActionContainer = ({
+  iconsWithActions,
+}: {
+  iconsWithActions: IconsWithAction[];
+}) => {
   return (
     // eslint-disable-next-line react-native/no-inline-styles
     <View style={{flexDirection: 'row', gap: 10}}>
-      {icons?.map((icon, index) => {
+      {iconsWithActions.map((icon, index) => {
         return (
           <TextInput.Icon
             key={index}
@@ -45,7 +50,8 @@ export const DynamicTextInput = ({
   placeholder,
   keyboardType = 'default',
   secureTextEntry = false,
-  icons = [],
+  icon = undefined,
+  iconsWithAction = [],
 }: DynamicTextInputProps) => {
   const [contentValue, setContentValue] = useState<string>('');
   return (
@@ -58,7 +64,12 @@ export const DynamicTextInput = ({
       mode="outlined"
       keyboardType={keyboardType}
       secureTextEntry={secureTextEntry}
-      left={icons.length > 0 ? <IconContainer icons={icons} /> : undefined}
+      left={icon && icon}
+      right={
+        iconsWithAction.length > 0 ? (
+          <IconsWithActionContainer iconsWithActions={iconsWithAction} />
+        ) : undefined
+      }
     />
   );
 };
