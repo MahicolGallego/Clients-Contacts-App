@@ -7,7 +7,7 @@ import {
 } from './src/presentation/components';
 import {Button, PaperProvider} from 'react-native-paper';
 import IonicIcon from 'react-native-vector-icons/Ionicons';
-import {DynamicTextInput} from './src/presentation/components/shared/InputText';
+import {DynamicTextInput} from './src/presentation/components/shared/DinamicTextInput';
 import {NavigationContainer} from '@react-navigation/native';
 import {StackNavigator} from './src/routes/StackNavigator';
 

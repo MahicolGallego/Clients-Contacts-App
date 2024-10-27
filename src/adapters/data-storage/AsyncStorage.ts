@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Alert} from 'react-native';
-import {v4 as uuid} from 'uuid';
+import uuid from 'react-native-uuid';
 
 //Interfaces
-interface IContact {
+export interface IContact {
   id?: string;
   name: string;
   phone: string;
@@ -12,15 +12,15 @@ interface IContact {
   photo?: string;
 }
 
-type IUpdateContact = Omit<Partial<IContact>, 'id'>;
+export type IUpdateContact = Omit<Partial<IContact>, 'id'>;
 
-interface IStoreContactData {
+export interface IStoreContactData {
   header: string;
   contacts: IContact[];
 }
 
 //enums
-enum ContactType {
+export enum ContactType {
   client = 'client',
   employee = 'employee',
 }
@@ -30,7 +30,7 @@ const headerRegex = /^[a-z].*$/;
 const phoneRegex = /^\+?(\d[\d- ]{7,}\d)$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export class StoreData {
+export class DataStorage {
   static async createContact({
     headerOfUser,
     NewContact,
@@ -39,13 +39,12 @@ export class StoreData {
     NewContact: IContact;
   }) {
     if (!headerRegex.test(NewContact.name.toLowerCase())) {
-      return Alert.alert(
-        'Invalid name. Name of contact should start with a letter',
-      );
+      Alert.alert('Invalid name. Name of contact should start with a letter');
+      return [];
     }
 
     if (!phoneRegex.test(NewContact.phone)) {
-      return Alert.alert(
+      Alert.alert(
         'Invalid Phone Number',
         'Please enter a valid phone number in one of the following formats:\n' +
           '- 1234567\n' +
@@ -54,10 +53,11 @@ export class StoreData {
           '- +1 234-567-8901\n' +
           'The number should only contain digits and may include the "+" symbol for international formats.',
       );
+      return [];
     }
 
     if (!emailRegex.test(NewContact.email.toLowerCase())) {
-      return Alert.alert(
+      Alert.alert(
         'Invalid Email Address',
         'Please enter a valid email address in one of the following formats:\n' +
           '- example@example.com\n' +
@@ -66,17 +66,22 @@ export class StoreData {
           '- user123@domain.com\n' +
           '- user-name@domain.com\n',
       );
+      return [];
     }
 
     NewContact.name = this.capitalizeName(NewContact.name);
     NewContact.email = NewContact.email.toLowerCase();
-    // add id as uuid
-    const newContact: IContact = {...NewContact, id: uuid()};
-    let existingContacts: IStoreContactData[] | undefined =
-      await StoreData.getAllContacts('contacts');
 
+    // add id as uuid
+    const newContact: IContact = {...NewContact, id: uuid.v4() as string};
+
+    let existingContacts: IStoreContactData[] | undefined =
+      await DataStorage.getAllContacts();
+
+    // Se retorna vacio ya que si viene undefined es por que hay error al consultar
+    // los datos desde el async storage, es error y no que no hay data
     if (existingContacts === undefined) {
-      return;
+      return [];
     }
 
     if (!existingContacts.length) {
@@ -93,7 +98,8 @@ export class StoreData {
           contact => contact.name === newContact.name,
         );
         if (existingContact) {
-          return Alert.alert('Contact already exists');
+          Alert.alert('Contact already exists');
+          return [];
         }
 
         contactListWithHeaderOfUser.contacts.push(newContact);
@@ -102,8 +108,8 @@ export class StoreData {
       existingContacts.sort((a, b) => a.header.localeCompare(b.header, 'es'));
 
       //sort contacts by user names
-      existingContacts.forEach(listContacts => {
-        return listContacts.contacts.sort((a, b) =>
+      existingContacts.forEach(contactList => {
+        return contactList.contacts.sort((a, b) =>
           a.name.localeCompare(b.name, 'es'),
         );
       });
@@ -111,16 +117,16 @@ export class StoreData {
     try {
       await AsyncStorage.setItem('contacts', JSON.stringify(existingContacts));
       Alert.alert('Contact created successfully');
+      return existingContacts;
     } catch (e) {
       console.error('Error al guardar los datos en AsyncStorage:', e);
+      return [];
     }
   }
 
-  static async getAllContacts(
-    key: string,
-  ): Promise<IStoreContactData[] | undefined> {
+  static async getAllContacts(): Promise<IStoreContactData[] | undefined> {
     try {
-      const data = await AsyncStorage.getItem(key);
+      const data = await AsyncStorage.getItem('contacts');
       return data ? JSON.parse(data) : [];
     } catch (e) {
       console.error('Error to get data from AsyncStorage:', e);
@@ -221,7 +227,7 @@ export class StoreData {
     contactList: IStoreContactData | undefined;
   }> {
     const existingContacts: IStoreContactData[] | undefined =
-      await StoreData.getAllContacts('contacts');
+      await DataStorage.getAllContacts();
 
     if (existingContacts === undefined) {
       return {
