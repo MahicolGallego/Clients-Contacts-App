@@ -10,6 +10,7 @@ import IonicIcon from 'react-native-vector-icons/Ionicons';
 import {DynamicTextInput} from './src/presentation/components/shared/DinamicTextInput';
 import {NavigationContainer} from '@react-navigation/native';
 import {StackNavigator} from './src/routes/StackNavigator';
+import {Colors} from './src/presentation/theme/global.styles';
 
 export const App = () => {
   return (
@@ -31,6 +32,7 @@ export const App = () => {
             style={{
               flex: 1,
               gap: 10,
+              backgroundColor: Colors.primaryBackground,
             }}>
             <StackNavigator />
             <Text>Hello, World!</Text>
