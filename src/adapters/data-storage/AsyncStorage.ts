@@ -10,6 +10,7 @@ export interface IContact {
   email: string;
   type: ContactType;
   photo?: string;
+  location: string;
 }
 
 export type IUpdateContact = Omit<Partial<IContact>, 'id'>;

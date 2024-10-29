@@ -3,8 +3,9 @@ import {ContactsScreen} from '../presentation/screens/Contacts/ContactsScreen';
 import {AddContactScreen} from '../presentation/screens/Add-contact/AddContactScreen';
 import {ContactDetailsScreen} from '../presentation/screens/Contact-details/ContactDetailsScreen';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
+import {Colors} from '../presentation/theme/global.styles';
 
 export type RootStackParamsList = {
   Contacts: undefined;
@@ -16,16 +17,23 @@ const Stack = createNativeStackNavigator<RootStackParamsList>();
 
 export function StackNavigator() {
   return (
-    <Stack.Navigator screenOptions={{headerTitleAlign: 'center'}}>
+    <Stack.Navigator
+      screenOptions={{
+        headerTitleAlign: 'center',
+        headerStyle: {
+          backgroundColor: Colors.secondaryBackground,
+        },
+        headerTintColor: 'white',
+      }}>
       <Stack.Screen
         name="Contacts"
         component={ContactsScreen}
         options={{
           // eslint-disable-next-line react/no-unstable-nested-components
           headerTitle: () => (
-            <View style={{flexDirection: 'row', gap: 10, alignItems: 'center'}}>
-              <Text style={{fontSize: 20, fontWeight: '700'}}>Contacts</Text>
-              <Icon name="people" size={24} color="black" />
+            <View style={styles.container}>
+              <Text style={styles.headerText}>Contacts</Text>
+              <Icon name="people" size={24} color="white" />
             </View>
           ),
         }}
@@ -36,9 +44,9 @@ export function StackNavigator() {
         options={{
           // eslint-disable-next-line react/no-unstable-nested-components
           headerTitle: () => (
-            <View style={{flexDirection: 'row', gap: 10, alignItems: 'center'}}>
-              <Text style={{fontSize: 20, fontWeight: '700'}}>New</Text>
-              <Icon name="person-add" size={24} color="black" />
+            <View style={styles.container}>
+              <Text style={styles.headerText}>New</Text>
+              <Icon name="person-add" size={24} color="white" />
             </View>
           ),
         }}
@@ -49,8 +57,8 @@ export function StackNavigator() {
         options={{
           // eslint-disable-next-line react/no-unstable-nested-components
           headerTitle: () => (
-            <View style={{flexDirection: 'row', gap: 10, alignItems: 'center'}}>
-              <Icon name="person" size={24} color="black" />
+            <View style={styles.container}>
+              <Icon name="person" size={24} color="white" />
             </View>
           ),
         }}
@@ -58,3 +66,12 @@ export function StackNavigator() {
     </Stack.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    gap: 10,
+    alignItems: 'center',
+  },
+  headerText: {fontSize: 20, fontWeight: '700', color: 'white'},
+});

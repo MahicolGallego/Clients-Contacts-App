@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
 import {TextInput} from 'react-native-paper';
-import {GlobalStyles} from '../../theme/global.styles';
+import {Colors, GlobalStyles} from '../../theme/global.styles';
 import {View} from 'react-native';
 
 interface DynamicTextInputProps {
   label: string;
+  contentValue: string;
   placeholder: string;
   keyboardType?:
     | 'default'
@@ -17,6 +18,7 @@ interface DynamicTextInputProps {
   secureTextEntry?: boolean;
   icon?: string;
   iconsWithAction?: IconsWithAction[];
+  onChangeText?: (value: string) => void;
 }
 
 interface IconsWithAction {
@@ -32,14 +34,8 @@ const IconsWithActionContainer = ({
   return (
     // eslint-disable-next-line react-native/no-inline-styles
     <View style={{flexDirection: 'row', gap: 10}}>
-      {iconsWithActions.map((icon, index) => {
-        return (
-          <TextInput.Icon
-            key={index}
-            icon={icon.icon && icon.icon}
-            onPress={icon.action ? icon.action : undefined}
-          />
-        );
+      {iconsWithActions.map(icon => {
+        return <TextInput.Icon icon={icon.icon} onPress={icon.action} />;
       })}
     </View>
   );
@@ -47,24 +43,28 @@ const IconsWithActionContainer = ({
 
 export const DynamicTextInput = ({
   label,
+  contentValue,
   placeholder,
   keyboardType = 'default',
   secureTextEntry = false,
   icon = undefined,
   iconsWithAction = [],
+  onChangeText,
 }: DynamicTextInputProps) => {
-  const [contentValue, setContentValue] = useState<string>('');
   return (
     <TextInput
       style={GlobalStyles.input}
+      textColor={Colors.textPrimary}
+      placeholderTextColor={GlobalStyles.placeholderTextColor.color}
+      activeOutlineColor={Colors.primary}
       label={label}
       placeholder={placeholder}
       value={contentValue}
-      onChangeText={setContentValue}
+      onChangeText={onChangeText}
       mode="outlined"
       keyboardType={keyboardType}
       secureTextEntry={secureTextEntry}
-      left={icon && icon}
+      left={icon && <TextInput.Icon icon={icon} color={Colors.primary} />}
       right={
         iconsWithAction.length > 0 ? (
           <IconsWithActionContainer iconsWithActions={iconsWithAction} />
