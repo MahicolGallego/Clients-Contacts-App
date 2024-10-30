@@ -22,20 +22,21 @@ export const GlobalStyles = StyleSheet.create({
     gap: 15,
   },
 
-  headerText: {
+  title: {
     color: Colors.textPrimary,
     fontSize: 24,
     fontWeight: 'bold',
+    marginTop: 15,
+    marginBottom: 15,
   },
 
-  subheaderText: {
+  subtitle: {
     color: Colors.textSecondary,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
   },
 
   input: {
-    width: '100%',
     backgroundColor: Colors.secondaryBackground,
     borderColor: Colors.border,
     borderRadius: 8,

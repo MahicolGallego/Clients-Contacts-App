@@ -1,12 +1,15 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {TextInput} from 'react-native-paper';
 import {Colors, GlobalStyles} from '../../theme/global.styles';
-import {View} from 'react-native';
+import {DimensionValue} from 'react-native';
 
 interface DynamicTextInputProps {
   label: string;
   contentValue: string;
-  placeholder: string;
+  editable?: boolean;
+  placeholder?: string;
+  width?: DimensionValue;
+  activeOutlineColor?: string;
   keyboardType?:
     | 'default'
     | 'email-address'
@@ -17,7 +20,7 @@ interface DynamicTextInputProps {
     | 'visible-password';
   secureTextEntry?: boolean;
   icon?: string;
-  iconsWithAction?: IconsWithAction[];
+  iconWithAction?: IconsWithAction;
   onChangeText?: (value: string) => void;
 }
 
@@ -26,34 +29,21 @@ interface IconsWithAction {
   action: () => void;
 }
 
-const IconsWithActionContainer = ({
-  iconsWithActions,
-}: {
-  iconsWithActions: IconsWithAction[];
-}) => {
-  return (
-    // eslint-disable-next-line react-native/no-inline-styles
-    <View style={{flexDirection: 'row', gap: 10}}>
-      {iconsWithActions.map(icon => {
-        return <TextInput.Icon icon={icon.icon} onPress={icon.action} />;
-      })}
-    </View>
-  );
-};
-
 export const DynamicTextInput = ({
   label,
   contentValue,
   placeholder,
+  editable = true,
   keyboardType = 'default',
   secureTextEntry = false,
+  width = '100%',
   icon = undefined,
-  iconsWithAction = [],
+  iconWithAction,
   onChangeText,
 }: DynamicTextInputProps) => {
   return (
     <TextInput
-      style={GlobalStyles.input}
+      style={{...GlobalStyles.input, width}}
       textColor={Colors.textPrimary}
       placeholderTextColor={GlobalStyles.placeholderTextColor.color}
       activeOutlineColor={Colors.primary}
@@ -64,11 +54,20 @@ export const DynamicTextInput = ({
       mode="outlined"
       keyboardType={keyboardType}
       secureTextEntry={secureTextEntry}
+      editable={editable}
       left={icon && <TextInput.Icon icon={icon} color={Colors.primary} />}
       right={
-        iconsWithAction.length > 0 ? (
-          <IconsWithActionContainer iconsWithActions={iconsWithAction} />
-        ) : undefined
+        iconWithAction && (
+          <TextInput.Icon
+            icon={iconWithAction.icon}
+            color={Colors.primary}
+            onPress={iconWithAction.action}
+          />
+        )
+
+        // iconsWithAction.length > 0 ? (
+        //   <IconsWithActionContainer iconsWithActions={iconsWithAction} />
+        // ) : undefined
       }
     />
   );

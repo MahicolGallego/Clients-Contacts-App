@@ -1,5 +1,5 @@
 /* eslint-disable curly */
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {
   IContact,
   IStoreContactData,
@@ -14,10 +14,6 @@ export const useContactsList = () => {
     useNavigation<NativeStackNavigationProp<RootStackParamsList>>();
 
   const [contacts, setContacts] = useState<IStoreContactData[]>([]);
-
-  useEffect(() => {
-    loadContacts();
-  }, []);
 
   const loadContacts = async () => {
     const contactsList = await DataStorage.getAllContacts();
@@ -43,7 +39,11 @@ export const useContactsList = () => {
 
   const updateContact = async (contact_id: string) => {};
 
-  const removeContact = async (contact_id: string) => {};
+  const removeContact = async (contact_id: string) => {
+    const contactsListUpdated = await DataStorage.deleteContact(contact_id);
+    if (contactsListUpdated === undefined) return;
+    setContacts(contactsListUpdated);
+  };
 
   return {
     // Properties

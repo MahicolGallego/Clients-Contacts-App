@@ -10,14 +10,14 @@ export interface IContact {
   email: string;
   type: ContactType;
   photo?: string;
-  location: string;
+  location?: string;
 }
 
 export type IUpdateContact = Omit<Partial<IContact>, 'id'>;
 
 export interface IStoreContactData {
-  header: string;
-  contacts: IContact[];
+  title: string;
+  data: IContact[];
 }
 
 //enums
@@ -86,16 +86,16 @@ export class DataStorage {
     }
 
     if (!existingContacts.length) {
-      existingContacts = [{header: headerOfUser, contacts: [newContact]}];
+      existingContacts = [{title: headerOfUser, data: [newContact]}];
     } else {
       const contactListWithHeaderOfUser: IStoreContactData | undefined =
         existingContacts.find(
-          listContact => listContact.header === headerOfUser,
+          listContact => listContact.title === headerOfUser,
         );
       if (!contactListWithHeaderOfUser) {
-        existingContacts.push({header: headerOfUser, contacts: [newContact]});
+        existingContacts.push({title: headerOfUser, data: [newContact]});
       } else {
-        const existingContact = contactListWithHeaderOfUser.contacts.find(
+        const existingContact = contactListWithHeaderOfUser.data.find(
           contact => contact.name === newContact.name,
         );
         if (existingContact) {
@@ -103,14 +103,14 @@ export class DataStorage {
           return [];
         }
 
-        contactListWithHeaderOfUser.contacts.push(newContact);
+        contactListWithHeaderOfUser.data.push(newContact);
       }
       //sort contacts list by header
-      existingContacts.sort((a, b) => a.header.localeCompare(b.header, 'es'));
+      existingContacts.sort((a, b) => a.title.localeCompare(b.title, 'es'));
 
       //sort contacts by user names
       existingContacts.forEach(contactList => {
-        return contactList.contacts.sort((a, b) =>
+        return contactList.data.sort((a, b) =>
           a.name.localeCompare(b.name, 'es'),
         );
       });
@@ -188,19 +188,20 @@ export class DataStorage {
       data.email = data.email.toLowerCase();
     }
 
-    contactList.contacts = contactList.contacts.map(contact =>
+    contactList.data = contactList.data.map(contact =>
       contact.id === contact_id ? {...contact, ...data} : contact,
     );
 
     try {
       await AsyncStorage.setItem('contacts', JSON.stringify(existingContacts));
       Alert.alert('Contact updated successfully');
+      return existingContacts;
     } catch (e) {
       console.error('Error al guardar los datos en AsyncStorage:', e);
     }
   }
   static async deleteContact(contact_id: string) {
-    const {existingContacts, contactList} =
+    let {existingContacts, contactList} =
       await this.searchContactListOfContactById(contact_id);
 
     if (existingContacts === undefined) {
@@ -211,15 +212,24 @@ export class DataStorage {
       return Alert.alert('Contact to delete not found');
     }
 
-    contactList.contacts = contactList.contacts.filter(
+    contactList.data = contactList.data.filter(
       contact => contact.id !== contact_id,
     );
+
+    if (!contactList.data.length) {
+      existingContacts = existingContacts.filter(
+        listContact => listContact.title !== contactList.title,
+      );
+    }
 
     try {
       await AsyncStorage.setItem('contacts', JSON.stringify(existingContacts));
       Alert.alert('Contact deleted successfully');
+      return existingContacts;
     } catch (e) {
-      console.error('Error al guardar los datos en AsyncStorage:', e);
+      Alert.alert('error to save data to storage');
+      console.error('Error to save data to storage: ', e);
+      return;
     }
   }
 
@@ -239,7 +249,7 @@ export class DataStorage {
 
     // Encontrar la lista de contactos que contiene el contacto a actualizar
     const contactList = existingContacts.find(listContact =>
-      listContact.contacts.some(contact => contact.id === contact_id),
+      listContact.data.some(contact => contact.id === contact_id),
     );
 
     return {existingContacts, contactList};

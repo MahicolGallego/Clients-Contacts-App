@@ -62,7 +62,7 @@ export const AddContactScreen = () => {
                   icon="image"
                   style={{backgroundColor: Colors.secondary}}
                 />
-                <Text style={GlobalStyles.headerText}>+ Add photo</Text>
+                <Text style={GlobalStyles.title}>+ Add photo</Text>
               </>
             )}
           </Pressable>
@@ -173,9 +173,7 @@ export const AddContactScreen = () => {
               icon="location"
               style={{backgroundColor: Colors.primary}}
             />
-            <Text style={{...GlobalStyles.headerText, fontSize: 18}}>
-              Location
-            </Text>
+            <Text style={{...GlobalStyles.title, fontSize: 18}}>Location</Text>
           </Pressable>
 
           {/*pressable save*/}
