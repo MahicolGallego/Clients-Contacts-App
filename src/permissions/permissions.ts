@@ -52,7 +52,7 @@ export const requestMediaLibraryPermission = async () => {
       parseInt(Platform.Version as string, 10) >= 30
         ? PERMISSIONS.ANDROID.READ_MEDIA_IMAGES
         : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
-    ios: PERMISSIONS.IOS.MEDIA_LIBRARY,
+    ios: PERMISSIONS.IOS.PHOTO_LIBRARY,
   });
 
   if (!mediaLibraryPermission) {

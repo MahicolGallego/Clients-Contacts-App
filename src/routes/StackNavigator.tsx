@@ -6,10 +6,11 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {Colors} from '../presentation/theme/global.styles';
+import {IContact} from '../interfaces/contact.interfaces';
 
 export type RootStackParamsList = {
   Contacts: undefined;
-  ContactDetails: {contact_id: string};
+  ContactDetails: {item: IContact};
   AddContact: undefined;
 };
 

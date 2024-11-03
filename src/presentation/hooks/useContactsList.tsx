@@ -1,19 +1,17 @@
 /* eslint-disable curly */
 import {useState} from 'react';
-import {
-  IContact,
-  IStoreContactData,
-  DataStorage,
-} from '../../adapters/data-storage/AsyncStorage';
+import {DataStorage} from '../../adapters/data-storage/AsyncStorage';
 import {RootStackParamsList} from '../../routes/StackNavigator';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackActions, useNavigation} from '@react-navigation/native';
+import {IStorageContactData} from '../../interfaces/data-storage.interfaces';
+import {IContact} from '../../interfaces/contact.interfaces';
 
 export const useContactsList = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamsList>>();
 
-  const [contacts, setContacts] = useState<IStoreContactData[]>([]);
+  const [contacts, setContacts] = useState<IStorageContactData[]>([]);
 
   const loadContacts = async () => {
     const contactsList = await DataStorage.getAllContacts();
@@ -37,8 +35,6 @@ export const useContactsList = () => {
     navigation.dispatch(StackActions.popToTop());
   };
 
-  const updateContact = async (contact_id: string) => {};
-
   const removeContact = async (contact_id: string) => {
     const contactsListUpdated = await DataStorage.deleteContact(contact_id);
     if (contactsListUpdated === undefined) return;
@@ -52,7 +48,6 @@ export const useContactsList = () => {
     // Methods
     addContact,
     loadContacts,
-    updateContact,
     removeContact,
   };
 };

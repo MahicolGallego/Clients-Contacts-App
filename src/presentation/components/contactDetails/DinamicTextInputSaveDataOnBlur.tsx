@@ -1,13 +1,11 @@
-import React from 'react';
+import React, {Dispatch, SetStateAction} from 'react';
 import {TextInput} from 'react-native-paper';
 import {Colors, GlobalStyles} from '../../theme/global.styles';
 import {DimensionValue} from 'react-native';
-import {IconWithAction} from '../../../interfaces/icon-with-action.interface';
 
-interface DynamicTextInputProps {
+interface DynamicTextInputSaveDataOnBlurProps {
   label: string;
-  contentValue: string;
-  editable?: boolean;
+  valueToInput: string;
   placeholder?: string;
   width?: DimensionValue;
   activeOutlineColor?: string;
@@ -21,22 +19,24 @@ interface DynamicTextInputProps {
     | 'visible-password';
   secureTextEntry?: boolean;
   icon?: string;
-  iconWithAction?: IconWithAction;
-  onChangeText?: (value: string) => void;
+  onChangeText: (
+    value: any,
+    setDataFunction?: Dispatch<SetStateAction<any>>,
+  ) => void;
+  onBlurFunction: (value: string) => void;
 }
 
-export const DynamicTextInput = ({
+export const DynamicTextInputSaveDataOnBlur = ({
   label,
-  contentValue,
+  valueToInput,
   placeholder,
-  editable = true,
   keyboardType = 'default',
   secureTextEntry = false,
   width = '100%',
   icon = undefined,
-  iconWithAction,
+  onBlurFunction,
   onChangeText,
-}: DynamicTextInputProps) => {
+}: DynamicTextInputSaveDataOnBlurProps) => {
   return (
     <TextInput
       style={{...GlobalStyles.input, width}}
@@ -45,22 +45,16 @@ export const DynamicTextInput = ({
       activeOutlineColor={Colors.primary}
       label={label}
       placeholder={placeholder}
-      value={contentValue}
-      onChangeText={onChangeText}
+      value={valueToInput}
+      // onChangeText updates the ref with the latest value without re-rendering the component
+      onChangeText={value => onChangeText(value)}
+      // onBlur triggers the onBlur prop function with the current value in the ref
+      onBlur={() => onBlurFunction(valueToInput)}
       mode="outlined"
       keyboardType={keyboardType}
       secureTextEntry={secureTextEntry}
-      editable={editable}
+      // Optional icons: left icon and right icon with action, if provided
       left={icon && <TextInput.Icon icon={icon} color={Colors.primary} />}
-      right={
-        iconWithAction && (
-          <TextInput.Icon
-            icon={iconWithAction.icon}
-            color={Colors.primary}
-            onPress={iconWithAction.action}
-          />
-        )
-      }
     />
   );
 };

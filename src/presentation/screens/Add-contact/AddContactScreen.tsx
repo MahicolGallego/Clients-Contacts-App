@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {Modal, Pressable, ScrollView, StyleSheet, View} from 'react-native';
+import {Modal, Pressable, ScrollView, View} from 'react-native';
 import {Avatar, FAB, Text} from 'react-native-paper';
 import IconMI from 'react-native-vector-icons/MaterialIcons';
 import {Colors, GlobalStyles} from '../../theme/global.styles';
@@ -30,14 +30,14 @@ export const AddContactScreen = () => {
             style={({pressed}) => [
               {
                 ...GlobalStyles.buttonSecondary,
-                ...styles.pressableCircle,
+                ...GlobalStyles.pressableCircle,
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
               },
               pressed && {
                 ...GlobalStyles.buttonPrimary,
-                ...styles.pressableCircle,
+                ...GlobalStyles.pressableCircle,
               },
             ]}
             onPress={() => setIsVisible(!isVisible)}>
@@ -46,12 +46,12 @@ export const AddContactScreen = () => {
                 <Avatar.Image
                   size={200}
                   source={{uri: newContact.photo}}
-                  style={styles.pressableCircle}
+                  style={GlobalStyles.pressableCircle}
                 />
                 <FAB
                   icon="trash"
                   color={Colors.primary}
-                  style={styles.fab}
+                  style={GlobalStyles.fabDelete}
                   onPress={deleteTempPhoto}
                 />
               </>
@@ -76,12 +76,15 @@ export const AddContactScreen = () => {
                 flexDirection: 'column',
                 backgroundColor: Colors.secondaryBackground,
               }}>
-              <View style={styles.modalContainer}>
+              <View style={GlobalStyles.modalContainer}>
                 <FAB
                   icon="camera"
                   color="white"
                   label="Photo"
-                  style={styles.modalButton}
+                  style={{
+                    ...GlobalStyles.buttonPrimary,
+                    ...GlobalStyles.modalButton,
+                  }}
                   onPress={() => {
                     setIsVisible(!isVisible);
                     updateTempPhotoTakingPhoto();
@@ -91,7 +94,10 @@ export const AddContactScreen = () => {
                   icon="image"
                   color="white"
                   label="Gallery"
-                  style={styles.modalButton}
+                  style={{
+                    ...GlobalStyles.buttonPrimary,
+                    ...GlobalStyles.modalButton,
+                  }}
                   onPress={() => {
                     setIsVisible(!isVisible);
                     updateTempPhotoUploadFromMediaLbrary();
@@ -105,7 +111,11 @@ export const AddContactScreen = () => {
                 icon="close"
                 color="white"
                 label="Close"
-                style={{...styles.modalButton, width: '100%'}}
+                style={{
+                  ...GlobalStyles.buttonPrimary,
+                  ...GlobalStyles.modalButton,
+                  width: '100%',
+                }}
                 onPress={() => {
                   setIsVisible(!isVisible);
                 }}
@@ -139,13 +149,13 @@ export const AddContactScreen = () => {
           />
 
           {/*Select for assign label*/}
-          <View style={styles.pickerContainer}>
+          <View style={GlobalStyles.pickerContainer}>
             <IconMI name="label" size={28} color={Colors.primary} />
 
             <Picker
               selectedValue={newContact.type}
               onValueChange={updateTempType}
-              style={{...styles.picker}}
+              style={{...GlobalStyles.picker}}
               dropdownIconColor="white">
               <Picker.Item label="Employee" value="Employee" />
               <Picker.Item label="Client" value="Client" />
@@ -193,53 +203,3 @@ export const AddContactScreen = () => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  pressableCircle: {
-    borderRadius: 100,
-    width: 200,
-    height: 200,
-  },
-  pickerContainer: {
-    width: '100%',
-    height: 50,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 20,
-    borderColor: Colors.border,
-    borderWidth: 1,
-    borderRadius: 8,
-    backgroundColor: Colors.secondaryBackground,
-    paddingHorizontal: 10,
-  },
-  picker: {
-    width: '90%',
-    color: Colors.textPrimary, // Color del texto
-  },
-  modalContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    padding: 20,
-  },
-  modalButton: {
-    ...GlobalStyles.buttonPrimary,
-    width: '40%',
-    alignSelf: 'flex-end',
-  },
-  fab: {
-    position: 'absolute',
-    margin: 8,
-    right: 0,
-    bottom: 0,
-    width: 40,
-    height: 40,
-    backgroundColor: Colors.secondaryBackground,
-    borderColor: Colors.border,
-    borderWidth: 2,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-  },
-});

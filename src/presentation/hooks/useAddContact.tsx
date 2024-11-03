@@ -1,8 +1,9 @@
 /* eslint-disable curly */
 import {useState} from 'react';
-import {ContactType, IContact} from '../../adapters/data-storage/AsyncStorage';
+
 import {useContactsList} from './useContactsList';
 import {CameraAdapter} from '../../adapters/camera/CameraAdapter';
+import {ContactType, IContact} from '../../interfaces/contact.interfaces';
 
 export const useAddContact = () => {
   const {addContact} = useContactsList();

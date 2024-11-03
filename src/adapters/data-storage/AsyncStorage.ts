@@ -1,30 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Alert} from 'react-native';
 import uuid from 'react-native-uuid';
-
-//Interfaces
-export interface IContact {
-  id?: string;
-  name: string;
-  phone: string;
-  email: string;
-  type: ContactType;
-  photo?: string;
-  location?: string;
-}
-
-export type IUpdateContact = Omit<Partial<IContact>, 'id'>;
-
-export interface IStoreContactData {
-  title: string;
-  data: IContact[];
-}
-
-//enums
-export enum ContactType {
-  client = 'client',
-  employee = 'employee',
-}
+import {IContact, IUpdateContact} from '../../interfaces/contact.interfaces';
+import {IStorageContactData} from '../../interfaces/data-storage.interfaces';
 
 //regex to validate contact info
 const headerRegex = /^[a-z].*$/;
@@ -76,7 +54,7 @@ export class DataStorage {
     // add id as uuid
     const newContact: IContact = {...NewContact, id: uuid.v4() as string};
 
-    let existingContacts: IStoreContactData[] | undefined =
+    let existingContacts: IStorageContactData[] | undefined =
       await DataStorage.getAllContacts();
 
     // Se retorna vacio ya que si viene undefined es por que hay error al consultar
@@ -88,7 +66,7 @@ export class DataStorage {
     if (!existingContacts.length) {
       existingContacts = [{title: headerOfUser, data: [newContact]}];
     } else {
-      const contactListWithHeaderOfUser: IStoreContactData | undefined =
+      const contactListWithHeaderOfUser: IStorageContactData | undefined =
         existingContacts.find(
           listContact => listContact.title === headerOfUser,
         );
@@ -125,18 +103,21 @@ export class DataStorage {
     }
   }
 
-  static async getAllContacts(): Promise<IStoreContactData[] | undefined> {
+  static async getAllContacts(): Promise<IStorageContactData[] | undefined> {
     try {
       const data = await AsyncStorage.getItem('contacts');
       return data ? JSON.parse(data) : [];
     } catch (e) {
       console.error('Error to get data from AsyncStorage:', e);
       Alert.alert('Error to get data');
-      return undefined; // Devuelve un arreglo vacío en caso de error
+      return undefined;
     }
   }
 
-  static async updateContact(contact_id: string, data: IUpdateContact) {
+  static async updateContact(
+    contact_id: string,
+    newContactData: IUpdateContact,
+  ) {
     const {existingContacts, contactList} =
       await this.searchContactListOfContactById(contact_id);
 
@@ -145,22 +126,24 @@ export class DataStorage {
     }
 
     if (!contactList) {
-      return Alert.alert('Contact to update not found');
+      Alert.alert('Contact to update not found');
+      return;
     }
 
-    if (data.name) {
-      if (!headerRegex.test(data.name.toLowerCase())) {
-        return Alert.alert(
+    if (newContactData.name) {
+      if (!headerRegex.test(newContactData.name.toLowerCase())) {
+        Alert.alert(
           'Invalid name. Contact name should start with a letter',
           'Contact name has not been updated',
         );
+        return;
       }
-      data.name = this.capitalizeName(data.name);
+      newContactData.name = this.capitalizeName(newContactData.name);
     }
 
-    if (data.phone) {
-      if (!phoneRegex.test(data.phone)) {
-        return Alert.alert(
+    if (newContactData.phone) {
+      if (!phoneRegex.test(newContactData.phone)) {
+        Alert.alert(
           'Invalid Phone Number',
           'Please enter a valid phone number in one of the following formats:\n' +
             '- 1234567\n' +
@@ -169,12 +152,13 @@ export class DataStorage {
             '- +1 234-567-8901\n' +
             'Phone number has not been updated',
         );
+        return;
       }
     }
 
-    if (data.email) {
-      if (!emailRegex.test(data.email.toLowerCase())) {
-        return Alert.alert(
+    if (newContactData.email) {
+      if (!emailRegex.test(newContactData.email.toLowerCase())) {
+        Alert.alert(
           'Invalid Email Address',
           'Please enter a valid email address in one of the following formats:\n' +
             '- example@example.com\n' +
@@ -184,20 +168,28 @@ export class DataStorage {
             '- user-name@domain.com\n' +
             'Email address has not been updated',
         );
+        return;
       }
-      data.email = data.email.toLowerCase();
+      newContactData.email = newContactData.email.toLowerCase();
     }
 
-    contactList.data = contactList.data.map(contact =>
-      contact.id === contact_id ? {...contact, ...data} : contact,
-    );
+    let updatedContact;
+
+    contactList.data = contactList.data.map(contact => {
+      if (contact.id === contact_id) {
+        updatedContact = {...contact, ...newContactData};
+        return updatedContact;
+      }
+      return contact;
+    });
 
     try {
       await AsyncStorage.setItem('contacts', JSON.stringify(existingContacts));
-      Alert.alert('Contact updated successfully');
-      return existingContacts;
+      return updatedContact;
     } catch (e) {
-      console.error('Error al guardar los datos en AsyncStorage:', e);
+      Alert.alert('Error to save data to storage');
+      console.error('Error to save data to storage to AsyncStorage:', e);
+      return;
     }
   }
   static async deleteContact(contact_id: string) {
@@ -227,17 +219,17 @@ export class DataStorage {
       Alert.alert('Contact deleted successfully');
       return existingContacts;
     } catch (e) {
-      Alert.alert('error to save data to storage');
-      console.error('Error to save data to storage: ', e);
+      Alert.alert('error to delete data to storage');
+      console.error('Error to delete data to storage: ', e);
       return;
     }
   }
 
   static async searchContactListOfContactById(contact_id: string): Promise<{
-    existingContacts: IStoreContactData[] | undefined;
-    contactList: IStoreContactData | undefined;
+    existingContacts: IStorageContactData[] | undefined;
+    contactList: IStorageContactData | undefined;
   }> {
-    const existingContacts: IStoreContactData[] | undefined =
+    const existingContacts: IStorageContactData[] | undefined =
       await DataStorage.getAllContacts();
 
     if (existingContacts === undefined) {
