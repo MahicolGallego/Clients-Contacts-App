@@ -9,9 +9,22 @@ import {useEffect} from 'react';
 import {SectionList} from 'react-native';
 import {TitleSection} from '../../components/Contacts/TitleSection';
 import {CardContact} from '../../components/Contacts/CardContact';
+import {DynamicTextInput} from '../../components/shared/DinamicTextInput';
+import {DropdownComponent} from '../../components/shared/Dropdown';
+import {DropdownContactTypesForFilter} from '../../../constants/dropdown-data';
+import {ContactType} from '../../../interfaces/contact.interfaces';
 
 export const ContactsScreen = () => {
-  const {contacts, loadContacts, removeContact} = useContactsList();
+  const {
+    contacts,
+    filterByText,
+    filterByContactType,
+    loadContacts,
+    removeContact,
+    filterContacts,
+    setFilterByText,
+    setFilterByContactType,
+  } = useContactsList();
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamsList>>();
@@ -30,6 +43,29 @@ export const ContactsScreen = () => {
   return (
     <>
       <View style={{...GlobalStyles.container, paddingBottom: 70}}>
+        {/*search input fields*/}
+        <DynamicTextInput
+          label="Search Contacts"
+          contentValue={filterByText}
+          icon="search-outline" // Icono de búsqueda
+          placeholder="search..."
+          width="100%"
+          onChangeText={(value: string) => {
+            setFilterByText(value);
+            filterContacts(value, filterByContactType);
+          }}
+        />
+
+        {/*filter dropdown*/}
+        <DropdownComponent
+          label="Contact type"
+          iconName="funnel-outline"
+          data={DropdownContactTypesForFilter}
+          onChange={(value: ContactType | 'All') => {
+            setFilterByContactType(value);
+            filterContacts(filterByText, value);
+          }}
+        />
         {contacts[0] ? (
           <SectionList
             showsVerticalScrollIndicator={false}

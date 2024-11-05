@@ -1,11 +1,12 @@
 import {useState} from 'react';
 import {Modal, Pressable, ScrollView, View} from 'react-native';
 import {Avatar, FAB, Text} from 'react-native-paper';
-import IconMI from 'react-native-vector-icons/MaterialIcons';
 import {Colors, GlobalStyles} from '../../theme/global.styles';
 import {DynamicTextInput} from '../../components/shared/DinamicTextInput';
-import {Picker} from '@react-native-picker/picker';
 import {useAddContact} from '../../hooks/useAddContact';
+import {DropdownContactTypes} from '../../../constants/dropdown-data';
+import {DropdownComponent} from '../../components/shared/Dropdown';
+import {ContactType} from '../../../interfaces/contact.interfaces';
 
 export const AddContactScreen = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -149,18 +150,12 @@ export const AddContactScreen = () => {
           />
 
           {/*Select for assign label*/}
-          <View style={GlobalStyles.pickerContainer}>
-            <IconMI name="label" size={28} color={Colors.primary} />
-
-            <Picker
-              selectedValue={newContact.type}
-              onValueChange={updateTempType}
-              style={{...GlobalStyles.picker}}
-              dropdownIconColor="white">
-              <Picker.Item label="Employee" value="Employee" />
-              <Picker.Item label="Client" value="Client" />
-            </Picker>
-          </View>
+          <DropdownComponent
+            label="Contact type"
+            iconName="pricetag-outline"
+            data={DropdownContactTypes}
+            onChange={value => updateTempType(value as ContactType)}
+          />
 
           {/*pressable location*/}
           <Pressable
