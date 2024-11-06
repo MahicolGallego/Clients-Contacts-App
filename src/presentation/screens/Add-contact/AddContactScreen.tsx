@@ -152,6 +152,7 @@ export const AddContactScreen = () => {
           {/*Select for assign label*/}
           <DropdownComponent
             label="Contact type"
+            contentValue={newContact.type}
             iconName="pricetag-outline"
             data={DropdownContactTypes}
             onChange={value => updateTempType(value as ContactType)}

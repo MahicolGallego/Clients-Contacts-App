@@ -13,6 +13,7 @@ import {DynamicTextInput} from '../../components/shared/DinamicTextInput';
 import {DropdownComponent} from '../../components/shared/Dropdown';
 import {DropdownContactTypesForFilter} from '../../../constants/dropdown-data';
 import {ContactType} from '../../../interfaces/contact.interfaces';
+import {API_KEY_GOOGLE_MAPS} from '@env';
 
 export const ContactsScreen = () => {
   const {
@@ -29,12 +30,17 @@ export const ContactsScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamsList>>();
 
+  console.log('desde process: ' + process.env.API_KEY_GOOGLE_MAPS);
+  console.log('desde modulo: ' + API_KEY_GOOGLE_MAPS);
+
   useEffect(() => {
     loadContacts();
 
-    const reLoadContacts = navigation.addListener('focus', () =>
-      loadContacts(),
-    );
+    const reLoadContacts = navigation.addListener('focus', () => {
+      setFilterByText('');
+      setFilterByContactType('All');
+      loadContacts();
+    });
 
     return reLoadContacts;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -58,7 +64,9 @@ export const ContactsScreen = () => {
 
         {/*filter dropdown*/}
         <DropdownComponent
+          width={'50%'}
           label="Contact type"
+          contentValue={filterByContactType}
           iconName="funnel-outline"
           data={DropdownContactTypesForFilter}
           onChange={(value: ContactType | 'All') => {
@@ -93,12 +101,6 @@ export const ContactsScreen = () => {
           style={styles.fab}
           onPress={() => navigation.navigate('AddContact')}
         />
-        {/* <FAB
-          label="Press me to navigate to contact datails screen"
-          onPress={() =>
-            navigation.navigate('ContactDetails', {contact_id: '1'})
-          }
-        /> */}
       </View>
     </>
   );

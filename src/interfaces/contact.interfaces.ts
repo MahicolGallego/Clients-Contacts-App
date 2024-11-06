@@ -14,6 +14,6 @@ export type IUpdateContact = Omit<Partial<IContact>, 'id'>;
 
 //enums
 export enum ContactType {
-  client = 'client',
-  employee = 'employee',
+  Client = 'Client',
+  Employee = 'Employee',
 }

@@ -1,4 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
+import 'react-native-gesture-handler';
+import React from 'react';
 import {Alert, Text} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {

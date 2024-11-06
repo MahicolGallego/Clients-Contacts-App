@@ -12,7 +12,7 @@ export const useAddContact = () => {
     name: '',
     phone: '',
     email: '',
-    type: ContactType.employee,
+    type: ContactType.Employee,
     photo: undefined,
   });
 

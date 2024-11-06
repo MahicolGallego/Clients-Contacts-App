@@ -10,7 +10,7 @@ interface DropdownComponentProps {
   onChange: (value: any) => void; // function to active when the dropdown changes
   label?: string;
   width?: DimensionValue;
-  defaultValue?: string;
+  contentValue: string;
 }
 
 export const DropdownComponent = ({
@@ -18,12 +18,9 @@ export const DropdownComponent = ({
   label,
   iconName,
   width,
-  defaultValue,
+  contentValue,
   onChange,
 }: DropdownComponentProps) => {
-  const [value, setValue] = useState(
-    defaultValue ? defaultValue : data[0].value,
-  );
   const [isFocus, setIsFocus] = useState(false);
 
   const renderLabel = (labelToRender: string | undefined) => {
@@ -53,12 +50,12 @@ export const DropdownComponent = ({
         maxHeight={300}
         labelField="label"
         valueField="value"
-        value={value}
+        value={contentValue}
         onFocus={() => setIsFocus(!isFocus)}
         onBlur={() => setIsFocus(!isFocus)}
         onChange={item => {
-          setValue(item.value);
-          setIsFocus(false);
+          console.log(contentValue);
+          setIsFocus(!isFocus);
           onChange(item.value);
         }}
         renderLeftIcon={() => (

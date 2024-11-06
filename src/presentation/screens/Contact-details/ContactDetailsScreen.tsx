@@ -171,7 +171,7 @@ export const ContactDetailsScreen = () => {
             label="Contact type"
             iconName="pricetag-outline"
             data={DropdownContactTypes}
-            defaultValue={contact.type}
+            contentValue={contact.type}
             onChange={value => updateContactData({type: value as ContactType})}
           />
 
