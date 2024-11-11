@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {View, Modal, ScrollView, Pressable} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Modal, ScrollView, Pressable, Platform} from 'react-native';
 import {Avatar, FAB, Text} from 'react-native-paper';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {GlobalStyles} from '../../theme/global.styles';
@@ -8,6 +8,7 @@ import {DynamicTextInputSaveDataOnBlur} from '../../components/contactDetails/Di
 import {ContactType} from '../../../interfaces/contact.interfaces';
 import {DropdownComponent} from '../../components/shared/Dropdown';
 import {DropdownContactTypes} from '../../../constants/dropdown-data';
+import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 
 export const ContactDetailsScreen = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -23,12 +24,21 @@ export const ContactDetailsScreen = () => {
     updateTempNewFullName,
     updateTempNewEmail,
     updateTempNewPhoneNumber,
+    requestLocationPermissions,
+    deleteLocation,
+    resetContact,
     onChangeText,
   } = useContactDetails();
 
+  useEffect(() => {
+    return () => {
+      resetContact();
+    };
+  }, []);
+
   return (
     <>
-      <ScrollView contentContainerStyle={{flex: 1}}>
+      <ScrollView contentContainerStyle={{flexGrow: 1}}>
         <View style={GlobalStyles.container}>
           {/*pressable image*/}
           <Pressable
@@ -176,28 +186,77 @@ export const ContactDetailsScreen = () => {
           />
 
           {/*pressable location*/}
-          <Pressable
-            style={({pressed}) => [
-              {
-                ...GlobalStyles.buttonSecondary,
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: 10,
-                width: '100%',
-              },
-              pressed && {
-                ...GlobalStyles.buttonPrimary,
-              },
-            ]}
-            onPress={() => {}}>
-            <Avatar.Icon
-              size={28}
-              icon="location"
-              style={{backgroundColor: Colors.primary}}
-            />
-            <Text style={{...GlobalStyles.title, fontSize: 18}}>Location</Text>
-          </Pressable>
+          {contact.location?.latitude && contact.location?.longitude ? (
+            <>
+              <Pressable
+                style={[
+                  GlobalStyles.locationContainer,
+                  {width: '100%', height: 300},
+                ]}
+                onPress={requestLocationPermissions}>
+                <View
+                  style={[
+                    GlobalStyles.locationContainer,
+                    {width: '100%', height: 300},
+                  ]}>
+                  {/* Display small map of the location */}
+
+                  <MapView
+                    showsUserLocation={false}
+                    provider={
+                      Platform.OS === 'ios' ? undefined : PROVIDER_GOOGLE
+                    } // remove if not using Google Maps
+                    style={{flex: 1}}
+                    region={{
+                      latitude: contact.location.latitude,
+                      longitude: contact.location.longitude,
+                      latitudeDelta: 0.0922,
+                      longitudeDelta: 0.0421,
+                    }}>
+                    <Marker
+                      coordinate={{
+                        latitude: contact.location.latitude,
+                        longitude: contact.location.longitude,
+                      }}
+                    />
+                  </MapView>
+                </View>
+              </Pressable>
+              {/* Button to delete location */}
+              <FAB
+                label="delete location"
+                icon="trash"
+                color="white"
+                style={GlobalStyles.deleteLocationButton}
+                onPress={deleteLocation}
+              />
+            </>
+          ) : (
+            <Pressable
+              style={({pressed}) => [
+                {
+                  ...GlobalStyles.buttonSecondary,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: 10,
+                  width: '100%',
+                },
+                pressed && {
+                  ...GlobalStyles.buttonPrimary,
+                },
+              ]}
+              onPress={requestLocationPermissions}>
+              <Avatar.Icon
+                size={28}
+                icon="location"
+                style={{backgroundColor: Colors.primary}}
+              />
+              <Text style={{...GlobalStyles.title, fontSize: 18}}>
+                Assign Location
+              </Text>
+            </Pressable>
+          )}
         </View>
       </ScrollView>
     </>

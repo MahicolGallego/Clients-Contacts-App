@@ -13,6 +13,7 @@ import {DynamicTextInput} from './src/presentation/components/shared/DinamicText
 import {NavigationContainer} from '@react-navigation/native';
 import {StackNavigator} from './src/routes/StackNavigator';
 import {Colors} from './src/presentation/theme/global.styles';
+import {PermissionsChecker} from './src/providers/PermissionsChecker';
 
 export const App = () => {
   return (
@@ -23,22 +24,24 @@ export const App = () => {
       personalizados como gestores de estado, elementos que comparten infromacion a lo largo
       de todo su arbol de componentes o el context de la aplicacion, etc... y permite la
       interaccion con estos*/}
-        <PaperProvider
-          settings={{
-            // eslint-disable-next-line react/no-unstable-nested-components
-            icon: props => <IonicIcon {...props} />,
-          }}>
-          {/*Provee informacion sobre el tema, textos, colores y nos permite personalizar
-        todos los elementos que vengan del mismo*/}
-          <SafeAreaView
-            style={{
-              flex: 1,
-              gap: 10,
-              backgroundColor: Colors.primaryBackground,
+        <PermissionsChecker>
+          <PaperProvider
+            settings={{
+              // eslint-disable-next-line react/no-unstable-nested-components
+              icon: props => <IonicIcon {...props} />,
             }}>
-            <StackNavigator />
-          </SafeAreaView>
-        </PaperProvider>
+            {/*Provee informacion sobre el tema, textos, colores y nos permite personalizar
+        todos los elementos que vengan del mismo*/}
+            <SafeAreaView
+              style={{
+                flex: 1,
+                gap: 10,
+                backgroundColor: Colors.primaryBackground,
+              }}>
+              <StackNavigator />
+            </SafeAreaView>
+          </PaperProvider>
+        </PermissionsChecker>
       </NavigationContainer>
     </>
   );

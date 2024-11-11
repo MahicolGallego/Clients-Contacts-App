@@ -1,76 +1,62 @@
 /* eslint-disable curly */
-import {useState} from 'react';
-
 import {useContactsList} from './useContactsList';
 import {CameraAdapter} from '../../adapters/camera/CameraAdapter';
-import {ContactType, IContact} from '../../interfaces/contact.interfaces';
+import {usePermissionStore} from '../../store/permissions/usePermissions';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParamsList} from '../../routes/StackNavigator';
+import {useNewContactStore} from '../../store/contacts/newContact';
+import {useEffect} from 'react';
 
 export const useAddContact = () => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamsList>>();
+
+  const {
+    newContact,
+    updateTempLocation,
+    updateTempPhoto,
+    deleteTempPhoto,
+    updateTempFullName,
+    updateTempEmail,
+    updateTempPhoneNumber,
+    updateTempType,
+    deleteTempLocation,
+    resetNewContact,
+  } = useNewContactStore();
+
+  useEffect(() => {
+    return resetNewContact();
+  }, []);
+
   const {addContact} = useContactsList();
-  const [newContact, setNewContact] = useState<IContact>({
-    id: undefined,
-    name: '',
-    phone: '',
-    email: '',
-    type: ContactType.Employee,
-    photo: undefined,
-  });
+
+  const {locationStatus, requestLocationPermisions} = usePermissionStore();
 
   const updateTempPhotoTakingPhoto = async () => {
     const photoUrl = await CameraAdapter.takePhoto();
     if (!photoUrl) return;
 
-    if (newContact.photo !== photoUrl) {
-      const newContactPhotoUpdated = {...newContact, photo: photoUrl};
-      setNewContact(newContactPhotoUpdated);
-    }
+    updateTempPhoto(photoUrl);
   };
 
   const updateTempPhotoUploadFromMediaLbrary = async () => {
     const photoUrl = await CameraAdapter.uploadPhotoFromLibrary();
     if (!photoUrl) return;
 
-    if (newContact.photo !== photoUrl) {
-      const newContactPhotoUpdated = {...newContact, photo: photoUrl};
-      setNewContact(newContactPhotoUpdated);
+    updateTempPhoto(photoUrl);
+  };
+
+  const requestLocationPermissions = async () => {
+    if (locationStatus === 'granted') {
+      navigation.navigate('Map', {
+        contact: newContact,
+        actionType: 'update-temp-location',
+      });
+    } else if (locationStatus !== 'undetermined') {
+      await requestLocationPermisions();
     }
   };
-
-  const deleteTempPhoto = async () => {
-    const newContactPhotoDeleted = {...newContact, photo: ''};
-    setNewContact(newContactPhotoDeleted);
-  };
-
-  const updateTempFullName = (value: string) => {
-    const newContactFullnameUpdated = {...newContact, name: value};
-    setNewContact(newContactFullnameUpdated);
-  };
-
-  const updateTempEmail = (value: string) => {
-    const newContactEmailUpdated = {...newContact, email: value};
-    setNewContact(newContactEmailUpdated);
-  };
-
-  const updateTempPhoneNumber = (value: string) => {
-    const newContactPhoneNumberUpdated = {...newContact, phone: value};
-    setNewContact(newContactPhoneNumberUpdated);
-  };
-
-  const updateTempType = (value: ContactType) => {
-    if (value !== newContact.type) {
-      const newContactTypeUpdated = {...newContact, type: value};
-      setNewContact(newContactTypeUpdated);
-    }
-  };
-
-  // const updateTempLocation = (value: ContactType) => {
-  //   const location = ;
-  //   if (location !== newContact.location) {
-  //     const newContactLocationUpdated = newContact;
-  //     newContactLocationUpdated.location = value;
-  //     setNewContact(newContactLocationUpdated);
-  //   }
-  // };
 
   return {
     //Properies
@@ -85,5 +71,9 @@ export const useAddContact = () => {
     updateTempPhotoTakingPhoto,
     updateTempPhotoUploadFromMediaLbrary,
     deleteTempPhoto,
+    updateTempLocation,
+    deleteTempLocation,
+    requestLocationPermissions,
+    resetNewContact,
   };
 };

@@ -13,7 +13,6 @@ import {DynamicTextInput} from '../../components/shared/DinamicTextInput';
 import {DropdownComponent} from '../../components/shared/Dropdown';
 import {DropdownContactTypesForFilter} from '../../../constants/dropdown-data';
 import {ContactType} from '../../../interfaces/contact.interfaces';
-import {API_KEY_GOOGLE_MAPS} from '@env';
 
 export const ContactsScreen = () => {
   const {
@@ -29,9 +28,6 @@ export const ContactsScreen = () => {
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamsList>>();
-
-  console.log('desde process: ' + process.env.API_KEY_GOOGLE_MAPS);
-  console.log('desde modulo: ' + API_KEY_GOOGLE_MAPS);
 
   useEffect(() => {
     loadContacts();

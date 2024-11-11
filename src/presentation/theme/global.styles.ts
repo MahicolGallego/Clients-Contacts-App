@@ -88,22 +88,7 @@ export const GlobalStyles = StyleSheet.create({
     width: 200,
     height: 200,
   },
-  pickerContainer: {
-    width: '100%',
-    height: 50,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 20,
-    borderColor: Colors.border,
-    borderWidth: 1,
-    borderRadius: 8,
-    backgroundColor: Colors.secondaryBackground,
-    paddingHorizontal: 10,
-  },
-  picker: {
-    width: '90%',
-    color: Colors.textPrimary, // Color del texto
-  },
+
   modalContainer: {
     flex: 1,
     flexDirection: 'row',
@@ -129,7 +114,17 @@ export const GlobalStyles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10,
   },
-
+  locationContainer: {
+    width: '100%',
+    marginTop: 20,
+    borderRadius: 10,
+    height: 300,
+  },
+  deleteLocationButton: {
+    width: '100%',
+    marginTop: 15,
+    backgroundColor: '#f50606',
+  },
   divider: {
     height: 1,
     backgroundColor: Colors.border,

@@ -7,11 +7,16 @@ import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {Colors} from '../presentation/theme/global.styles';
 import {IContact} from '../interfaces/contact.interfaces';
+import {MapScreen} from '../presentation/screens/maps/mapScreen';
 
 export type RootStackParamsList = {
   Contacts: undefined;
   ContactDetails: {item: IContact};
   AddContact: undefined;
+  Map: {
+    contact: IContact;
+    actionType: 'update-location' | 'update-temp-location';
+  };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamsList>();
@@ -60,6 +65,19 @@ export function StackNavigator() {
           headerTitle: () => (
             <View style={styles.container}>
               <Icon name="person" size={24} color="white" />
+            </View>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="Map"
+        component={MapScreen}
+        options={{
+          // eslint-disable-next-line react/no-unstable-nested-components
+          headerTitle: () => (
+            <View style={styles.container}>
+              <Text style={styles.headerText}>Location</Text>
+              <Icon name="map-outline" size={24} color="white" />
             </View>
           ),
         }}

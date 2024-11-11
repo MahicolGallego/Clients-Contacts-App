@@ -49,7 +49,7 @@ export const requestMediaLibraryPermission = async () => {
   // Select the appropriate media library permission based on the platform
   const mediaLibraryPermission = Platform.select({
     android:
-      parseInt(Platform.Version as string, 10) >= 30
+      parseInt(Platform.Version as string, 10) >= 29
         ? PERMISSIONS.ANDROID.READ_MEDIA_IMAGES
         : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
     ios: PERMISSIONS.IOS.PHOTO_LIBRARY,

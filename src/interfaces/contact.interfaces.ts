@@ -6,7 +6,7 @@ export interface IContact {
   email: string;
   type: ContactType;
   photo?: string;
-  location?: string;
+  location?: {latitude: number | null; longitude: number | null};
 }
 
 // types

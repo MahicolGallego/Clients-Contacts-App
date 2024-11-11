@@ -1,5 +1,5 @@
-import {useState} from 'react';
-import {Modal, Pressable, ScrollView, View} from 'react-native';
+import {useEffect, useState} from 'react';
+import {Modal, Platform, Pressable, ScrollView, View} from 'react-native';
 import {Avatar, FAB, Text} from 'react-native-paper';
 import {Colors, GlobalStyles} from '../../theme/global.styles';
 import {DynamicTextInput} from '../../components/shared/DinamicTextInput';
@@ -7,6 +7,7 @@ import {useAddContact} from '../../hooks/useAddContact';
 import {DropdownContactTypes} from '../../../constants/dropdown-data';
 import {DropdownComponent} from '../../components/shared/Dropdown';
 import {ContactType} from '../../../interfaces/contact.interfaces';
+import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 
 export const AddContactScreen = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -19,12 +20,21 @@ export const AddContactScreen = () => {
     updateTempPhoneNumber,
     updateTempType,
     deleteTempPhoto,
+    deleteTempLocation,
+    requestLocationPermissions,
+    resetNewContact,
     addContact,
   } = useAddContact();
 
+  useEffect(() => {
+    return () => {
+      resetNewContact();
+    };
+  }, []);
+
   return (
     <>
-      <ScrollView contentContainerStyle={{flex: 1}}>
+      <ScrollView contentContainerStyle={{flexGrow: 1}}>
         <View style={GlobalStyles.container}>
           {/*pressable image*/}
           <Pressable
@@ -159,28 +169,77 @@ export const AddContactScreen = () => {
           />
 
           {/*pressable location*/}
-          <Pressable
-            style={({pressed}) => [
-              {
-                ...GlobalStyles.buttonSecondary,
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: 10,
-                width: '100%',
-              },
-              pressed && {
-                ...GlobalStyles.buttonPrimary,
-              },
-            ]}
-            onPress={() => {}}>
-            <Avatar.Icon
-              size={28}
-              icon="location"
-              style={{backgroundColor: Colors.primary}}
-            />
-            <Text style={{...GlobalStyles.title, fontSize: 18}}>Location</Text>
-          </Pressable>
+          {newContact.location?.latitude && newContact.location?.longitude ? (
+            <>
+              <Pressable
+                style={[
+                  GlobalStyles.locationContainer,
+                  {width: '100%', height: 300},
+                ]}
+                onPress={requestLocationPermissions}>
+                <View
+                  style={[
+                    GlobalStyles.locationContainer,
+                    {width: '100%', height: 300},
+                  ]}>
+                  {/* Display small map of the location */}
+
+                  <MapView
+                    showsUserLocation={false}
+                    provider={
+                      Platform.OS === 'ios' ? undefined : PROVIDER_GOOGLE
+                    } // remove if not using Google Maps
+                    style={{flex: 1}}
+                    region={{
+                      latitude: newContact.location.latitude,
+                      longitude: newContact.location.longitude,
+                      latitudeDelta: 0.0922,
+                      longitudeDelta: 0.0421,
+                    }}>
+                    <Marker
+                      coordinate={{
+                        latitude: newContact.location.latitude,
+                        longitude: newContact.location.longitude,
+                      }}
+                    />
+                  </MapView>
+                </View>
+              </Pressable>
+              {/* Button to delete location */}
+              <FAB
+                label="delete location"
+                icon="trash"
+                color="white"
+                style={GlobalStyles.deleteLocationButton}
+                onPress={deleteTempLocation}
+              />
+            </>
+          ) : (
+            <Pressable
+              style={({pressed}) => [
+                {
+                  ...GlobalStyles.buttonSecondary,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: 10,
+                  width: '100%',
+                },
+                pressed && {
+                  ...GlobalStyles.buttonPrimary,
+                },
+              ]}
+              onPress={requestLocationPermissions}>
+              <Avatar.Icon
+                size={28}
+                icon="location"
+                style={{backgroundColor: Colors.primary}}
+              />
+              <Text style={{...GlobalStyles.title, fontSize: 18}}>
+                Assign Location
+              </Text>
+            </Pressable>
+          )}
 
           {/*pressable save*/}
           <FAB
@@ -192,7 +251,9 @@ export const AddContactScreen = () => {
               alignSelf: 'flex-end',
               marginTop: 20,
             }}
-            onPress={() => addContact({NewContact: newContact})}
+            onPress={() => {
+              addContact({NewContact: newContact});
+            }}
           />
         </View>
       </ScrollView>

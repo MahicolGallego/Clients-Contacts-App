@@ -2,7 +2,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {
   requestCameraPermission,
   requestMediaLibraryPermission,
-} from '../../permissions/permissions';
+} from '../../permissions/camera';
 import {RESULTS} from 'react-native-permissions';
 import {Alert} from 'react-native';
 
