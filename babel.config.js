@@ -10,7 +10,11 @@ module.exports = {
         blocklist: null,
         allowlist: null,
         blacklist: null, // DEPRECATED
-        whitelist: ['API_KEY_GOOGLE_MAPS'], // DEPRECATED
+        whitelist: [
+          'API_KEY_GOOGLE_MAPS',
+          'API_OPENWEATHERMAPS_BASE_URL',
+          'API_KEY_OPENWEATHERMAPS',
+        ], // DEPRECATED
         safe: false,
         allowUndefined: false,
         verbose: false,

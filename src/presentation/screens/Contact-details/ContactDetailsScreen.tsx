@@ -17,6 +17,7 @@ export const ContactDetailsScreen = () => {
     tempNewFullName,
     tempNewEmail,
     tempNewPhoneNumber,
+    weather,
     updateContactData,
     updateContactPhotoTakingPhoto,
     updateContactPhotoUploadFromMediaLbrary,
@@ -230,6 +231,18 @@ export const ContactDetailsScreen = () => {
                 style={GlobalStyles.deleteLocationButton}
                 onPress={deleteLocation}
               />
+              {/*weather data */}
+              <View style={GlobalStyles.weatherContainer}>
+                <Text style={GlobalStyles.weatherTemperature}>
+                  Temperature: {weather?.temperature}° C
+                </Text>
+                <Text style={GlobalStyles.weatherType}>
+                  Weather: {weather?.type}
+                </Text>
+                <Text style={GlobalStyles.weatherDescription}>
+                  {weather?.description}
+                </Text>
+              </View>
             </>
           ) : (
             <Pressable

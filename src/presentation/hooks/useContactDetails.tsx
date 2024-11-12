@@ -9,6 +9,10 @@ import {ILocation} from '../../interfaces/location';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {usePermissionStore} from '../../store/permissions/usePermissions';
 import {useContactDetailStore} from '../../store/contacts/contactDetail';
+import axios from 'axios';
+import {IWheather} from '../../interfaces/weather.interface';
+import {API_KEY_OPENWEATHERMAPS} from '@env';
+import Config from 'react-native-config';
 
 export const useContactDetails = () => {
   const navigation =
@@ -28,6 +32,7 @@ export const useContactDetails = () => {
   const [tempNewFullName, setTempNewFullName] = useState<string>('');
   const [tempNewEmail, setTempNewEmail] = useState<string>('');
   const [tempNewPhoneNumber, setTempNewPhoneNumber] = useState<string>('');
+  const [weather, setWeather] = useState<IWheather | null>(null);
 
   useEffect(() => {
     if (item) {
@@ -41,6 +46,12 @@ export const useContactDetails = () => {
       setTempNewFullName(contact.name || '');
       setTempNewEmail(contact.email || '');
       setTempNewPhoneNumber(contact.phone || '');
+    }
+    if (contact.location?.latitude && contact.location?.longitude) {
+      getWeather(
+        contact.location.latitude.toString(),
+        contact.location.longitude.toString(),
+      );
     }
   }, [contact]); // ejecutar cada vez que `contact` cambia para sincronizar los datos
 
@@ -176,12 +187,33 @@ export const useContactDetails = () => {
     }
   };
 
+  const getWeather = async (latitude: string, longitude: string) => {
+    const url = `${Config.API_OPENWEATHERMAPS_BASE_URL}lat=${latitude}&lon=${longitude}&appid=${API_KEY_OPENWEATHERMAPS}&units=metric`;
+
+    try {
+      const respuesta = await axios.get(url);
+
+      // Destructuring the data
+      const {main: climaData, description} = respuesta.data.weather[0]; // Example: "Clear" "clear sky"
+      let {temp: temperature} = respuesta.data.main;
+
+      setWeather({
+        type: climaData,
+        description,
+        temperature,
+      });
+    } catch (error) {
+      Alert.alert(`Error:${error}`);
+      console.error(error);
+    }
+  };
   return {
     // Properties
     contact,
     tempNewFullName,
     tempNewEmail,
     tempNewPhoneNumber,
+    weather,
 
     // Methodss
     updateContactData,

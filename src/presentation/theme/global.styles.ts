@@ -96,10 +96,12 @@ export const GlobalStyles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
+
   modalButton: {
     width: '40%',
     alignSelf: 'flex-end',
   },
+
   fabDelete: {
     position: 'absolute',
     margin: 8,
@@ -114,17 +116,50 @@ export const GlobalStyles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10,
   },
+
   locationContainer: {
     width: '100%',
     marginTop: 20,
     borderRadius: 10,
     height: 300,
   },
+
   deleteLocationButton: {
     width: '100%',
     marginTop: 15,
     backgroundColor: '#f50606',
   },
+
+  weatherContainer: {
+    marginTop: 20,
+    padding: 15,
+    backgroundColor: Colors.secondaryBackground,
+    borderRadius: 10,
+    width: '100%',
+    borderColor: Colors.border,
+    borderWidth: 1,
+  },
+
+  weatherType: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    color: Colors.textSecondary,
+    marginBottom: 5,
+  },
+
+  weatherDescription: {
+    fontSize: 16,
+    color: Colors.textSecondary,
+    marginBottom: 5,
+  },
+
+  weatherTemperature: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: Colors.primary,
+    marginBottom: 10,
+  },
+
   divider: {
     height: 1,
     backgroundColor: Colors.border,
