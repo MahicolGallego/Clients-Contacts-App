@@ -1,19 +1,14 @@
 /* eslint-disable react-native/no-inline-styles */
 import 'react-native-gesture-handler';
 import React from 'react';
-import {Alert, Text} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {
-  //PrimaryButton,
-  PrimaryButtonM3,
-} from './src/presentation/components';
-import {Button, PaperProvider} from 'react-native-paper';
+import {PaperProvider} from 'react-native-paper';
 import IonicIcon from 'react-native-vector-icons/Ionicons';
-import {DynamicTextInput} from './src/presentation/components/shared/DinamicTextInput';
 import {NavigationContainer} from '@react-navigation/native';
 import {StackNavigator} from './src/routes/StackNavigator';
 import {Colors} from './src/presentation/theme/global.styles';
 import {PermissionsChecker} from './src/providers/PermissionsChecker';
+import {OnboardingScreen} from './src/presentation/screens/Onboarding/OnboardingScreen';
 
 export const App = () => {
   return (
@@ -38,6 +33,7 @@ export const App = () => {
                 gap: 10,
                 backgroundColor: Colors.primaryBackground,
               }}>
+              <OnboardingScreen />
               <StackNavigator />
             </SafeAreaView>
           </PaperProvider>

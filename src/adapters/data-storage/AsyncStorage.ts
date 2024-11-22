@@ -253,4 +253,17 @@ export class DataStorage {
       .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize each word
       .join(' '); // Join the words back into a string
   }
+
+  static async setFirstAccess(): Promise<void> {
+    await AsyncStorage.setItem('first-access', 'false');
+    return;
+  }
+
+  static async checkFirstAccess(): Promise<boolean> {
+    const firstAccess = await AsyncStorage.getItem('first-access');
+    if (firstAccess === null || firstAccess === 'true') {
+      return true;
+    }
+    return false;
+  }
 }

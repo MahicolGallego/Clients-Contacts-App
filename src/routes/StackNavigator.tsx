@@ -7,7 +7,8 @@ import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {Colors} from '../presentation/theme/global.styles';
 import {IContact} from '../interfaces/contact.interfaces';
-import {MapScreen} from '../presentation/screens/maps/mapScreen';
+import {MapScreen} from '../presentation/screens/Maps/MapScreen';
+import React from 'react';
 
 export type RootStackParamsList = {
   Contacts: undefined;
