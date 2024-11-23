@@ -6,11 +6,17 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {Colors} from '../presentation/theme/global.styles';
-import {IContact} from '../interfaces/contact.interfaces';
+import {IContact} from '../interfaces/entities/contact/contact.interfaces';
 import {MapScreen} from '../presentation/screens/Maps/MapScreen';
 import React from 'react';
+import {RegisterScreen} from '../presentation/screens/Auth/RegisterScreen';
+import {LoginScreen} from '../presentation/screens/Auth/LoginScreen';
+import {LoadingScreen} from '../presentation/screens/Loading/LoadingScreen';
 
 export type RootStackParamsList = {
+  Loading: undefined;
+  Register: undefined;
+  Login: undefined;
   Contacts: undefined;
   ContactDetails: {item: IContact};
   AddContact: undefined;
@@ -25,6 +31,7 @@ const Stack = createNativeStackNavigator<RootStackParamsList>();
 export function StackNavigator() {
   return (
     <Stack.Navigator
+      initialRouteName="Loading"
       screenOptions={{
         headerTitleAlign: 'center',
         headerStyle: {
@@ -32,6 +39,21 @@ export function StackNavigator() {
         },
         headerTintColor: 'white',
       }}>
+      <Stack.Screen
+        name="Loading"
+        component={LoadingScreen}
+        options={{headerShown: false, animation: 'fade'}}
+      />
+      <Stack.Screen
+        name="Register"
+        component={RegisterScreen}
+        options={{headerShown: false, animation: 'slide_from_left'}}
+      />
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{headerShown: false, animation: 'slide_from_right'}}
+      />
       <Stack.Screen
         name="Contacts"
         component={ContactsScreen}

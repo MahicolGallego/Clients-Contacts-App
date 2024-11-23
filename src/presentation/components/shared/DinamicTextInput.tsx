@@ -2,12 +2,11 @@ import React from 'react';
 import {TextInput} from 'react-native-paper';
 import {Colors, GlobalStyles} from '../../theme/global.styles';
 import {DimensionValue} from 'react-native';
-import {IconWithAction} from '../../../interfaces/icon-with-action.interface';
+import {IconWithAction} from '../../../interfaces/for-components/icon-with-action.interface';
 
 interface DynamicTextInputProps {
   label: string;
   contentValue: string;
-  editable?: boolean;
   placeholder?: string;
   width?: DimensionValue;
   activeOutlineColor?: string;
@@ -20,6 +19,7 @@ interface DynamicTextInputProps {
     | 'ascii-capable'
     | 'visible-password';
   secureTextEntry?: boolean;
+  editable?: boolean;
   icon?: string;
   iconWithAction?: IconWithAction;
   onChangeText?: (value: string) => void;
@@ -29,12 +29,12 @@ export const DynamicTextInput = ({
   label,
   contentValue,
   placeholder,
-  editable = true,
   keyboardType = 'default',
   secureTextEntry = false,
   width = '100%',
   icon = undefined,
   iconWithAction,
+  editable = true,
   onChangeText,
 }: DynamicTextInputProps) => {
   return (
@@ -43,6 +43,7 @@ export const DynamicTextInput = ({
       textColor={Colors.textPrimary}
       placeholderTextColor={GlobalStyles.placeholderTextColor.color}
       activeOutlineColor={Colors.primary}
+      editable={editable}
       label={label}
       placeholder={placeholder}
       value={contentValue}
@@ -50,7 +51,6 @@ export const DynamicTextInput = ({
       mode="outlined"
       keyboardType={keyboardType}
       secureTextEntry={secureTextEntry}
-      editable={editable}
       left={icon && <TextInput.Icon icon={icon} color={Colors.primary} />}
       right={
         iconWithAction && (

@@ -9,6 +9,7 @@ import {StackNavigator} from './src/routes/StackNavigator';
 import {Colors} from './src/presentation/theme/global.styles';
 import {PermissionsChecker} from './src/providers/PermissionsChecker';
 import {OnboardingScreen} from './src/presentation/screens/Onboarding/OnboardingScreen';
+import {AuthProvider} from './src/providers/AuthProvider';
 
 export const App = () => {
   return (
@@ -34,7 +35,9 @@ export const App = () => {
                 backgroundColor: Colors.primaryBackground,
               }}>
               <OnboardingScreen />
-              <StackNavigator />
+              <AuthProvider>
+                <StackNavigator />
+              </AuthProvider>
             </SafeAreaView>
           </PaperProvider>
         </PermissionsChecker>

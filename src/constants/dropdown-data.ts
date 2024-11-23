@@ -1,10 +1,10 @@
 export const DropdownContactTypes = [
-  {label: 'Employee', value: 'Employee'},
-  {label: 'Client', value: 'Client'},
+  {label: 'employee', value: 'employee'},
+  {label: 'client', value: 'client'},
 ];
 
 export const DropdownContactTypesForFilter = [
   {label: 'All', value: 'All'},
-  {label: 'Employee', value: 'Employee'},
-  {label: 'Client', value: 'Client'},
+  {label: 'employee', value: 'employee'},
+  {label: 'client', value: 'client'},
 ];

@@ -6,7 +6,7 @@ import {DynamicTextInput} from '../../components/shared/DinamicTextInput';
 import {useAddContact} from '../../hooks/useAddContact';
 import {DropdownContactTypes} from '../../../constants/dropdown-data';
 import {DropdownComponent} from '../../components/shared/Dropdown';
-import {ContactType} from '../../../interfaces/contact.interfaces';
+import {ContactType} from '../../../interfaces/entities/contact/contact.interfaces';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 
 export const AddContactScreen = () => {
@@ -25,6 +25,8 @@ export const AddContactScreen = () => {
     resetNewContact,
     addContact,
   } = useAddContact();
+
+  console.log(newContact.type);
 
   useEffect(() => {
     return () => {

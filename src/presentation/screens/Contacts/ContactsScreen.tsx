@@ -12,7 +12,8 @@ import {CardContact} from '../../components/Contacts/CardContact';
 import {DynamicTextInput} from '../../components/shared/DinamicTextInput';
 import {DropdownComponent} from '../../components/shared/Dropdown';
 import {DropdownContactTypesForFilter} from '../../../constants/dropdown-data';
-import {ContactType} from '../../../interfaces/contact.interfaces';
+import {ContactType} from '../../../interfaces/entities/contact/contact.interfaces';
+import {useAuthStore} from '../../../store/auth/authStore';
 
 export const ContactsScreen = () => {
   const {
@@ -25,6 +26,8 @@ export const ContactsScreen = () => {
     setFilterByText,
     setFilterByContactType,
   } = useContactsList();
+
+  const {logout} = useAuthStore();
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamsList>>();
@@ -94,8 +97,17 @@ export const ContactsScreen = () => {
         <FAB
           icon="add-outline"
           color={Colors.primary}
-          style={styles.fab}
+          style={styles.fabAdd}
           onPress={() => navigation.navigate('AddContact')}
+        />
+
+        <FAB
+          icon="log-out-outline"
+          color="white"
+          style={styles.fabLogout}
+          onPress={() => {
+            logout();
+          }}
         />
       </View>
     </>
@@ -103,13 +115,20 @@ export const ContactsScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  fab: {
+  fabAdd: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 70,
+    backgroundColor: Colors.primaryBackground,
+    borderColor: Colors.primary,
+    borderWidth: 2,
+  },
+  fabLogout: {
     position: 'absolute',
     margin: 16,
     right: 0,
     bottom: 0,
-    backgroundColor: Colors.primaryBackground,
-    borderColor: Colors.primary,
-    borderWidth: 2,
+    backgroundColor: 'red',
   },
 });

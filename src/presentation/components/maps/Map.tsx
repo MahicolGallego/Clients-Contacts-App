@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Alert, Modal, Platform, StyleSheet, View} from 'react-native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
-import {ILocation} from '../../../interfaces/location';
+import {ILocation} from '../../../interfaces/entities/location/location';
 import {FAB, Text} from 'react-native-paper';
 import {Colors} from '../../theme/global.styles';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';

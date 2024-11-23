@@ -3,6 +3,7 @@ import {DimensionValue, StyleSheet, Text, View} from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Colors} from '../../theme/global.styles';
+import {ContactType} from '../../../interfaces/entities/contact/contact.interfaces';
 
 interface DropdownComponentProps {
   data: Array<{label: string; value: string}>; // Data to dropdown
@@ -10,7 +11,7 @@ interface DropdownComponentProps {
   onChange: (value: any) => void; // function to active when the dropdown changes
   label?: string;
   width?: DimensionValue;
-  contentValue: string;
+  contentValue: ContactType | string;
 }
 
 export const DropdownComponent = ({

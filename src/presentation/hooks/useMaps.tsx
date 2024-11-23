@@ -1,8 +1,8 @@
 import {RouteProp, useRoute} from '@react-navigation/native';
 import {RootStackParamsList} from '../../routes/StackNavigator';
-import {ILocation} from '../../interfaces/location';
+import {ILocation} from '../../interfaces/entities/location/location';
 import {useContactDetails} from './useContactDetails';
-import {useNewContactStore} from '../../store/contacts/newContact';
+import {useNewContactStore} from '../../store/contacts/newContactStore';
 export const useMaps = () => {
   const {params} = useRoute<RouteProp<RootStackParamsList, 'Map'>>();
 

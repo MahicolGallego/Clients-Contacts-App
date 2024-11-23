@@ -5,7 +5,7 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {GlobalStyles} from '../../theme/global.styles';
 import {useContactDetails} from '../../hooks/useContactDetails';
 import {DynamicTextInputSaveDataOnBlur} from '../../components/contactDetails/DinamicTextInputSaveDataOnBlur';
-import {ContactType} from '../../../interfaces/contact.interfaces';
+import {ContactType} from '../../../interfaces/entities/contact/contact.interfaces';
 import {DropdownComponent} from '../../components/shared/Dropdown';
 import {DropdownContactTypes} from '../../../constants/dropdown-data';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';

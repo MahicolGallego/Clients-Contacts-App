@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {StyleSheet, View, Modal, TouchableOpacity} from 'react-native';
 import {Avatar, FAB, Text} from 'react-native-paper';
-import {IContact} from '../../../interfaces/contact.interfaces';
+import {IContact} from '../../../interfaces/entities/contact/contact.interfaces';
 import {DynamicTextInput} from '../shared/DinamicTextInput';
 import {Colors} from '../../theme/global.styles';
 import {useNavigation} from '@react-navigation/native';

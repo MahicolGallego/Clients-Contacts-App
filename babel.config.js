@@ -14,6 +14,7 @@ module.exports = {
           'API_KEY_GOOGLE_MAPS',
           'API_OPENWEATHERMAPS_BASE_URL',
           'API_KEY_OPENWEATHERMAPS',
+          'API_URL',
         ], // DEPRECATED
         safe: false,
         allowUndefined: false,

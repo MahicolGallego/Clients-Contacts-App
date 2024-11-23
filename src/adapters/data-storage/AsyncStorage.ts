@@ -1,8 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Alert} from 'react-native';
 import uuid from 'react-native-uuid';
-import {IContact, IUpdateContact} from '../../interfaces/contact.interfaces';
-import {IStorageContactData} from '../../interfaces/data-storage.interfaces';
+import {
+  IContact,
+  IUpdateContact,
+} from '../../interfaces/entities/contact/contact.interfaces';
+import {ISectionListContactData} from '../../interfaces/for-components/section-list-data.interfaces';
 
 //regex to validate contact info
 const headerRegex = /^[a-z].*$/;
@@ -54,7 +57,7 @@ export class DataStorage {
     // add id as uuid
     const newContact: IContact = {...NewContact, id: uuid.v4() as string};
 
-    let existingContacts: IStorageContactData[] | undefined =
+    let existingContacts: ISectionListContactData[] | undefined =
       await DataStorage.getAllContacts();
 
     // Se retorna vacio ya que si viene undefined es por que hay error al consultar
@@ -66,7 +69,7 @@ export class DataStorage {
     if (!existingContacts.length) {
       existingContacts = [{title: headerOfUser, data: [newContact]}];
     } else {
-      const contactListWithHeaderOfUser: IStorageContactData | undefined =
+      const contactListWithHeaderOfUser: ISectionListContactData | undefined =
         existingContacts.find(
           listContact => listContact.title === headerOfUser,
         );
@@ -103,7 +106,9 @@ export class DataStorage {
     }
   }
 
-  static async getAllContacts(): Promise<IStorageContactData[] | undefined> {
+  static async getAllContacts(): Promise<
+    ISectionListContactData[] | undefined
+  > {
     try {
       const data = await AsyncStorage.getItem('contacts');
       return data ? JSON.parse(data) : [];
@@ -226,10 +231,10 @@ export class DataStorage {
   }
 
   static async searchContactListOfContactById(contact_id: string): Promise<{
-    existingContacts: IStorageContactData[] | undefined;
-    contactList: IStorageContactData | undefined;
+    existingContacts: ISectionListContactData[] | undefined;
+    contactList: ISectionListContactData | undefined;
   }> {
-    const existingContacts: IStorageContactData[] | undefined =
+    const existingContacts: ISectionListContactData[] | undefined =
       await DataStorage.getAllContacts();
 
     if (existingContacts === undefined) {
@@ -254,16 +259,28 @@ export class DataStorage {
       .join(' '); // Join the words back into a string
   }
 
-  static async setFirstAccess(): Promise<void> {
-    await AsyncStorage.setItem('first-access', 'false');
-    return;
+  static async setItem(key: string, value: string): Promise<void> {
+    try {
+      await AsyncStorage.setItem(key, value);
+    } catch (error) {
+      throw new Error('Error setting item ' + key + ':' + value);
+    }
   }
 
-  static async checkFirstAccess(): Promise<boolean> {
-    const firstAccess = await AsyncStorage.getItem('first-access');
-    if (firstAccess === null || firstAccess === 'true') {
-      return true;
+  static async getItem(key: string): Promise<string | null> {
+    try {
+      return await AsyncStorage.getItem(key);
+    } catch (error) {
+      console.error(error);
+      return null;
     }
-    return false;
+  }
+  static async removeItem(key: string): Promise<void> {
+    try {
+      return await AsyncStorage.removeItem(key);
+    } catch (error) {
+      console.error(error);
+      throw new Error('Error removing item ' + key);
+    }
   }
 }

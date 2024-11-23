@@ -1,6 +1,9 @@
 import {create} from 'zustand';
-import {ContactType, IContact} from '../../interfaces/contact.interfaces';
-import {ILocation} from '../../interfaces/location';
+import {
+  ContactType,
+  IContact,
+} from '../../interfaces/entities/contact/contact.interfaces';
+import {ILocation} from '../../interfaces/entities/location/location';
 
 interface newContactState {
   newContact: IContact;
@@ -21,7 +24,7 @@ const initialContactState: IContact = {
   name: '',
   phone: '',
   email: '',
-  type: ContactType.Employee,
+  type: ContactType.employee,
   photo: undefined,
   location: {latitude: null, longitude: null},
 };

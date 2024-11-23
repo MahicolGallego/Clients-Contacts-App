@@ -4,14 +4,18 @@ import {DataStorage} from '../../adapters/data-storage/AsyncStorage';
 import {RootStackParamsList} from '../../routes/StackNavigator';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackActions, useNavigation} from '@react-navigation/native';
-import {IStorageContactData} from '../../interfaces/data-storage.interfaces';
-import {ContactType, IContact} from '../../interfaces/contact.interfaces';
+
+import {
+  ContactType,
+  IContact,
+} from '../../interfaces/entities/contact/contact.interfaces';
+import {ISectionListContactData} from '../../interfaces/for-components/section-list-data.interfaces';
 
 export const useContactsList = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamsList>>();
 
-  const [contacts, setContacts] = useState<IStorageContactData[]>([]);
+  const [contacts, setContacts] = useState<ISectionListContactData[]>([]);
   const [filterByText, setFilterByText] = useState('');
   const [filterByContactType, setFilterByContactType] = useState<
     ContactType | 'All'

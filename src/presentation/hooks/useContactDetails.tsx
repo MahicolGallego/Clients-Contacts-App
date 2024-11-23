@@ -3,14 +3,14 @@ import {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import {RootStackParamsList} from '../../routes/StackNavigator';
 import {CameraAdapter} from '../../adapters/camera/CameraAdapter';
 import {DataStorage} from '../../adapters/data-storage/AsyncStorage';
-import {IUpdateContact} from '../../interfaces/contact.interfaces';
+import {IUpdateContact} from '../../interfaces/entities/contact/contact.interfaces';
 import {Alert} from 'react-native';
-import {ILocation} from '../../interfaces/location';
+import {ILocation} from '../../interfaces/entities/location/location';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {usePermissionStore} from '../../store/permissions/usePermissions';
-import {useContactDetailStore} from '../../store/contacts/contactDetail';
+import {useContactDetailStore} from '../../store/contacts/contactDetailStore';
 import axios from 'axios';
-import {IWheather} from '../../interfaces/weather.interface';
+import {IWheather} from '../../interfaces/entities/wheater/weather.interface';
 import {API_KEY_OPENWEATHERMAPS} from '@env';
 import Config from 'react-native-config';
 

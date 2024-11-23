@@ -5,7 +5,7 @@ import {usePermissionStore} from '../../store/permissions/usePermissions';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamsList} from '../../routes/StackNavigator';
-import {useNewContactStore} from '../../store/contacts/newContact';
+import {useNewContactStore} from '../../store/contacts/newContactStore';
 import {useEffect} from 'react';
 
 export const useAddContact = () => {

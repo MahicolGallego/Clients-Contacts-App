@@ -10,10 +10,9 @@ export const OnboardingScreen = () => {
 
   useEffect(() => {
     const checkAccess = async () => {
-      const userFirstAccess = await DataStorage.checkFirstAccess();
-      console.log(userFirstAccess);
-      if (firstAccess !== userFirstAccess) {
-        setFirstAccess(userFirstAccess);
+      const userFirstAccess = await DataStorage.getItem('first-access');
+      if (userFirstAccess === null || userFirstAccess === 'true') {
+        setFirstAccess(true);
       }
       setLoading(false);
     };
@@ -23,7 +22,7 @@ export const OnboardingScreen = () => {
 
   useEffect(() => {
     if (firstAccess) {
-      DataStorage.setFirstAccess();
+      DataStorage.setItem('first-access', 'false');
     }
     return;
   }, [firstAccess]);
