@@ -83,7 +83,11 @@ export const ContactsScreen = () => {
               <TitleSection title={section.title} />
             )}
             renderItem={({item}) => (
-              <CardContact item={item} removeContact={removeContact} />
+              <CardContact
+                item={item}
+                contactList={[...contacts]}
+                removeContact={removeContact}
+              />
             )}
           />
         ) : (

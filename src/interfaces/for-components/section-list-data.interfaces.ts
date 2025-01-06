@@ -1,8 +1,8 @@
 //Interfaces
 
-import {IContact} from '../entities/contact/contact.interfaces';
+import {IContactResponse} from '../api-responses/contacts-responses';
 
 export interface ISectionListContactData {
   title: string;
-  data: IContact[];
+  data: IContactResponse[];
 }

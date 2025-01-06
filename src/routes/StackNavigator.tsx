@@ -6,22 +6,23 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {Colors} from '../presentation/theme/global.styles';
-import {IContact} from '../interfaces/entities/contact/contact.interfaces';
 import {MapScreen} from '../presentation/screens/Maps/MapScreen';
 import React from 'react';
 import {RegisterScreen} from '../presentation/screens/Auth/RegisterScreen';
 import {LoginScreen} from '../presentation/screens/Auth/LoginScreen';
 import {LoadingScreen} from '../presentation/screens/Loading/LoadingScreen';
+import {IContactResponse} from '../interfaces/api-responses/contacts-responses';
+import {INewContact} from '../interfaces/entities/contact/contact.interfaces';
 
 export type RootStackParamsList = {
   Loading: undefined;
   Register: undefined;
   Login: undefined;
   Contacts: undefined;
-  ContactDetails: {item: IContact};
+  ContactDetails: {item: IContactResponse};
   AddContact: undefined;
   Map: {
-    contact: IContact;
+    contact: IContactResponse | INewContact;
     actionType: 'update-location' | 'update-temp-location';
   };
 };

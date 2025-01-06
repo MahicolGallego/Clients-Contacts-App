@@ -1,12 +1,12 @@
 import {create} from 'zustand';
 import {
   ContactType,
-  IContact,
+  INewContact,
 } from '../../interfaces/entities/contact/contact.interfaces';
 import {ILocation} from '../../interfaces/entities/location/location';
 
 interface newContactState {
-  newContact: IContact;
+  newContact: INewContact;
 
   updateTempLocation: (location: ILocation) => void;
   updateTempPhoto: (photo: string) => void;
@@ -19,24 +19,24 @@ interface newContactState {
   resetNewContact: () => void;
 }
 
-const initialContactState: IContact = {
-  id: undefined,
+const initialContactState: INewContact = {
   name: '',
   phone: '',
-  email: '',
+  email: null,
   type: ContactType.employee,
-  photo: undefined,
-  location: {latitude: null, longitude: null},
+  photo: null,
+  latitude: null,
+  longitude: null,
 };
 
 export const useNewContactStore = create<newContactState>()(set => ({
   newContact: initialContactState,
   updateTempLocation: location =>
-    set(state => ({newContact: {...state.newContact, location}})),
+    set(state => ({newContact: {...state.newContact, ...location}})),
   updateTempPhoto: photo =>
     set(state => ({newContact: {...state.newContact, photo}})),
   deleteTempPhoto: () =>
-    set(state => ({newContact: {...state.newContact, photo: ''}})),
+    set(state => ({newContact: {...state.newContact, photo: null}})),
   updateTempFullName: name =>
     set(state => ({newContact: {...state.newContact, name}})),
   updateTempEmail: email =>
@@ -46,7 +46,13 @@ export const useNewContactStore = create<newContactState>()(set => ({
   updateTempType: type =>
     set(state => ({newContact: {...state.newContact, type}})),
   deleteTempLocation: () =>
-    set(state => ({newContact: {...state.newContact, location: undefined}})),
+    set(state => ({
+      newContact: {
+        ...state.newContact,
+        latitude: null,
+        longitude: null,
+      },
+    })),
   resetNewContact: () =>
     set({
       newContact: initialContactState,

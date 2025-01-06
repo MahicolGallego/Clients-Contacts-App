@@ -153,7 +153,7 @@ export const ContactDetailsScreen = () => {
           />
           <DynamicTextInputSaveDataOnBlur
             label="email"
-            valueToInput={tempNewEmail}
+            valueToInput={tempNewEmail ? tempNewEmail : ''}
             placeholder="Enter your email"
             icon="person-outline"
             // if the user is editing the property value, disabled must be the opposite case

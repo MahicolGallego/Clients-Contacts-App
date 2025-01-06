@@ -1,10 +1,12 @@
 import React, {useState} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 import OnboardingSwiper from 'react-native-onboarding-swiper';
+import {DataStorage} from '../../../adapters/data-storage/AsyncStorage';
 
 export const Onboarding = () => {
   const [isVisible, setIsVisible] = useState(true);
-  const handleVisibility = () => {
+  const handleSetFirstAccess = async () => {
+    await DataStorage.setItem('first-access', 'false');
     setIsVisible(false);
   };
 
@@ -17,8 +19,8 @@ export const Onboarding = () => {
       <OnboardingSwiper
         containerStyles={{paddingHorizontal: 15}}
         imageContainerStyles={styles.onboardingImage}
-        onSkip={handleVisibility}
-        onDone={handleVisibility}
+        onSkip={handleSetFirstAccess}
+        onDone={handleSetFirstAccess}
         pages={[
           {
             backgroundColor: '#fff',

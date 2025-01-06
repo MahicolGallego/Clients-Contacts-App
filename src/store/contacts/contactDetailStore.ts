@@ -1,34 +1,28 @@
 import {create} from 'zustand';
-import {
-  ContactType,
-  IContact,
-} from '../../interfaces/entities/contact/contact.interfaces';
+import {ContactType} from '../../interfaces/entities/contact/contact.interfaces';
+import {IContactResponse} from '../../interfaces/api-responses/contacts-responses';
 
 interface contactDetailState {
-  contact: IContact;
+  contact: IContactResponse;
 
-  setContact: (contactDetails: IContact) => void;
-  deleteLocation: () => void;
+  setContact: (contactDetails: IContactResponse) => void;
   resetContact: () => void;
 }
 
-const initialContactDetails: IContact = {
-  id: undefined,
+const initialContactDetails: IContactResponse = {
+  id: '',
   name: '',
+  id_user: '',
   phone: '',
-  email: '',
+  email: null,
   type: ContactType.employee,
-  photo: undefined,
-  location: {latitude: null, longitude: null},
+  photo: null,
+  location: null,
 };
 
 export const useContactDetailStore = create<contactDetailState>()(set => ({
   contact: initialContactDetails,
   setContact: contactDetails => set({contact: {...contactDetails}}),
-  deleteLocation: () =>
-    set(state => ({
-      contact: {...state.contact, location: {latitude: null, longitude: null}},
-    })),
   resetContact: () =>
     set({
       contact: initialContactDetails,

@@ -6,7 +6,7 @@ import {IconWithAction} from '../../../interfaces/for-components/icon-with-actio
 
 interface DynamicTextInputProps {
   label: string;
-  contentValue: string;
+  contentValue: string | null;
   placeholder?: string;
   width?: DimensionValue;
   activeOutlineColor?: string;
@@ -46,7 +46,7 @@ export const DynamicTextInput = ({
       editable={editable}
       label={label}
       placeholder={placeholder}
-      value={contentValue}
+      value={contentValue ? contentValue : undefined}
       onChangeText={onChangeText}
       mode="outlined"
       keyboardType={keyboardType}

@@ -13,7 +13,7 @@ export const useMaps = () => {
 
   //   const {updateLocation} = useContactDetails();
 
-  let OnPressFunction: ({latitude, longitude}: ILocation) => void =
+  const OnPressFunction: ({latitude, longitude}: ILocation) => void =
     actionType === 'update-temp-location' ? updateTempLocation : updateLocation;
 
   return {contact, OnPressFunction};

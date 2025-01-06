@@ -26,8 +26,6 @@ export const AddContactScreen = () => {
     addContact,
   } = useAddContact();
 
-  console.log(newContact.type);
-
   useEffect(() => {
     return () => {
       resetNewContact();
@@ -146,7 +144,7 @@ export const AddContactScreen = () => {
           />
           <DynamicTextInput
             label="Email"
-            contentValue={newContact.email}
+            contentValue={newContact.email ? newContact.email : ''}
             placeholder="email address..."
             keyboardType="email-address"
             icon="mail-outline"
@@ -171,7 +169,7 @@ export const AddContactScreen = () => {
           />
 
           {/*pressable location*/}
-          {newContact.location?.latitude && newContact.location?.longitude ? (
+          {newContact.latitude && newContact.longitude ? (
             <>
               <Pressable
                 style={[
@@ -193,15 +191,15 @@ export const AddContactScreen = () => {
                     } // remove if not using Google Maps
                     style={{flex: 1}}
                     region={{
-                      latitude: newContact.location.latitude,
-                      longitude: newContact.location.longitude,
+                      latitude: newContact.latitude,
+                      longitude: newContact.longitude,
                       latitudeDelta: 0.0922,
                       longitudeDelta: 0.0421,
                     }}>
                     <Marker
                       coordinate={{
-                        latitude: newContact.location.latitude,
-                        longitude: newContact.location.longitude,
+                        latitude: newContact.latitude,
+                        longitude: newContact.longitude,
                       }}
                     />
                   </MapView>
@@ -254,7 +252,7 @@ export const AddContactScreen = () => {
               marginTop: 20,
             }}
             onPress={() => {
-              addContact({NewContact: newContact});
+              addContact(newContact);
             }}
           />
         </View>

@@ -1,15 +1,19 @@
 /* eslint-disable curly */
 import {useState} from 'react';
-import {DataStorage} from '../../adapters/data-storage/AsyncStorage';
 import {RootStackParamsList} from '../../routes/StackNavigator';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {StackActions, useNavigation} from '@react-navigation/native';
 
 import {
   ContactType,
-  IContact,
+  INewContact,
 } from '../../interfaces/entities/contact/contact.interfaces';
 import {ISectionListContactData} from '../../interfaces/for-components/section-list-data.interfaces';
+import {
+  createContact,
+  deleteContact,
+  findAllContacts,
+} from '../../actions/contacts/contacts.actions';
 
 export const useContactsList = () => {
   const navigation =
@@ -22,30 +26,29 @@ export const useContactsList = () => {
   >('All');
 
   const loadContacts = async () => {
-    const contactsList = await DataStorage.getAllContacts();
+    const contactsList = await findAllContacts();
 
-    if (contactsList === undefined) return;
+    if (contactsList === null) return;
 
     setContacts(contactsList);
   };
 
-  const addContact = async ({NewContact}: {NewContact: IContact}) => {
-    const headerOfUser = NewContact.name.charAt(0).toUpperCase();
-    const updatedContactsList = await DataStorage.createContact({
-      headerOfUser,
-      NewContact,
-    });
+  const addContact = async (NewContact: INewContact) => {
+    const newRegisteredContact = await createContact(NewContact);
 
-    if (!updatedContactsList.length) return;
-
-    setContacts(updatedContactsList);
+    if (!newRegisteredContact) return;
 
     navigation.dispatch(StackActions.popToTop());
   };
 
-  const removeContact = async (contact_id: string) => {
-    const contactsListUpdated = await DataStorage.deleteContact(contact_id);
-    if (contactsListUpdated === undefined) return;
+  const removeContact = async (
+    contact_id: string,
+    contactList: ISectionListContactData[],
+  ) => {
+    const contactsListUpdated = await deleteContact(contact_id, contactList);
+
+    if (!contactsListUpdated) return;
+
     setContacts(contactsListUpdated);
   };
 
@@ -67,7 +70,8 @@ export const useContactsList = () => {
         filteredContacts = filteredContacts.filter(contactsList =>
           contactsList.data.some(
             contact =>
-              contact.email.toLowerCase().includes(byText.toLowerCase()) ||
+              (contact.email &&
+                contact.email.toLowerCase().includes(byText.toLowerCase())) ||
               contact.name.toLowerCase().includes(byText.toLowerCase()) ||
               contact.phone.includes(byText.toLowerCase()),
           ),
@@ -77,7 +81,8 @@ export const useContactsList = () => {
         filteredContacts = filteredContacts.map(filteredList => {
           filteredList.data = filteredList.data.filter(
             contact =>
-              contact.email.toLowerCase().includes(byText.toLowerCase()) ||
+              (contact.email &&
+                contact.email.toLowerCase().includes(byText.toLowerCase())) ||
               contact.name.toLowerCase().includes(byText.toLowerCase()) ||
               contact.phone.includes(byText.toLowerCase()),
           );

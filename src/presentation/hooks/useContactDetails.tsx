@@ -2,10 +2,8 @@ import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import {RootStackParamsList} from '../../routes/StackNavigator';
 import {CameraAdapter} from '../../adapters/camera/CameraAdapter';
-import {DataStorage} from '../../adapters/data-storage/AsyncStorage';
 import {IUpdateContact} from '../../interfaces/entities/contact/contact.interfaces';
 import {Alert} from 'react-native';
-import {ILocation} from '../../interfaces/entities/location/location';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {usePermissionStore} from '../../store/permissions/usePermissions';
 import {useContactDetailStore} from '../../store/contacts/contactDetailStore';
@@ -13,6 +11,7 @@ import axios from 'axios';
 import {IWheather} from '../../interfaces/entities/wheater/weather.interface';
 import {API_KEY_OPENWEATHERMAPS} from '@env';
 import Config from 'react-native-config';
+import {updateContact} from '../../actions/contacts/contacts.actions';
 
 export const useContactDetails = () => {
   const navigation =
@@ -25,12 +24,11 @@ export const useContactDetails = () => {
 
   const {locationStatus, requestLocationPermisions} = usePermissionStore();
 
-  const {contact, setContact, deleteLocation, resetContact} =
-    useContactDetailStore();
+  const {contact, setContact, resetContact} = useContactDetailStore();
 
   // for temporary storage of the new values to update
   const [tempNewFullName, setTempNewFullName] = useState<string>('');
-  const [tempNewEmail, setTempNewEmail] = useState<string>('');
+  const [tempNewEmail, setTempNewEmail] = useState<string | null>(null);
   const [tempNewPhoneNumber, setTempNewPhoneNumber] = useState<string>('');
   const [weather, setWeather] = useState<IWheather | null>(null);
 
@@ -43,9 +41,9 @@ export const useContactDetails = () => {
   // funcion para setear los datos cuando setContact(asincrono) termine
   useEffect(() => {
     if (contact) {
-      setTempNewFullName(contact.name || '');
-      setTempNewEmail(contact.email || '');
-      setTempNewPhoneNumber(contact.phone || '');
+      setTempNewFullName(contact.name);
+      setTempNewEmail(contact.email);
+      setTempNewPhoneNumber(contact.phone);
     }
     if (contact.location?.latitude && contact.location?.longitude) {
       getWeather(
@@ -78,14 +76,21 @@ export const useContactDetails = () => {
   // };
 
   const updateContactData = async (newData: IUpdateContact) => {
-    const updatedContact = await DataStorage.updateContact(
-      contact.id as string,
-      newData,
-    );
+    // no request for update contact if there is not exchanges on the fields
+    if (
+      tempNewFullName === contact.name &&
+      ((tempNewEmail === '' && contact.email === 'null') ||
+        tempNewEmail === contact.email) &&
+      tempNewPhoneNumber === contact.phone
+    ) {
+      return;
+    }
+
+    const updatedContact = await updateContact(contact.id as string, newData);
 
     //If the update is not executed, the temporary contact details to be updated
     //will be reassigned to the existing contact details
-    if (updatedContact === undefined) {
+    if (!updatedContact) {
       if (newData.name) {
         setTempNewFullName(contact.name);
       }
@@ -94,15 +99,13 @@ export const useContactDetails = () => {
         setTempNewEmail(contact.email);
       }
 
-      if (newData.phone) {
+      if (newData.phone || newData.phone === '') {
         setTempNewPhoneNumber(contact.phone);
-      }
-      if (newData.location) {
       }
       return;
     }
 
-    // if the update is successful, update the contact
+    // if the update is successful, update the contact in the store
     setContact(updatedContact);
   };
 
@@ -124,14 +127,11 @@ export const useContactDetails = () => {
 
     if (contact.photo === photoUrl) return;
 
-    const updatedContact = await DataStorage.updateContact(
-      contact.id as string,
-      {
-        photo: photoUrl,
-      },
-    );
+    const updatedContact = await updateContact(contact.id as string, {
+      photo: photoUrl,
+    });
 
-    if (updatedContact === undefined) return;
+    if (!updatedContact) return;
 
     setContact(updatedContact);
   };
@@ -142,38 +142,23 @@ export const useContactDetails = () => {
 
     if (contact.photo === photoUrl) return;
 
-    const updatedContact = await DataStorage.updateContact(
-      contact.id as string,
-      {
-        photo: photoUrl,
-      },
-    );
+    const updatedContact = await updateContact(contact.id as string, {
+      photo: photoUrl,
+    });
 
-    if (updatedContact === undefined) return;
+    if (!updatedContact) return;
 
     setContact(updatedContact);
   };
 
   const deleteContactPhoto = async () => {
-    const updatedContact = await DataStorage.updateContact(
-      contact.id as string,
-      {
-        photo: '',
-      },
-    );
+    const updatedContact = await updateContact(contact.id as string, {
+      photo: null,
+    });
 
-    if (updatedContact === undefined) return;
+    if (!updatedContact) return;
 
     setContact(updatedContact);
-  };
-
-  const updateLocation = async (value: ILocation) => {
-    if (
-      value.latitude !== contact.location?.latitude &&
-      value.longitude !== contact.location?.longitude
-    ) {
-      await updateContactData({location: value});
-    }
   };
 
   const requestLocationPermissions = async () => {
@@ -187,15 +172,38 @@ export const useContactDetails = () => {
     }
   };
 
+  const updateLocation = async (value: {
+    longitude: number;
+    latitude: number;
+  }) => {
+    if (
+      value.latitude !== contact.location?.latitude ||
+      value.longitude !== contact.location?.longitude
+    ) {
+      await updateContactData({...value});
+    }
+  };
+
+  const deleteLocation = async () => {
+    const updatedContact = await updateContact(contact.id as string, {
+      latitude: null,
+      longitude: null,
+    });
+
+    if (!updatedContact) return;
+
+    setContact(updatedContact);
+  };
+
   const getWeather = async (latitude: string, longitude: string) => {
     const url = `${Config.API_OPENWEATHERMAPS_BASE_URL}lat=${latitude}&lon=${longitude}&appid=${API_KEY_OPENWEATHERMAPS}&units=metric`;
 
     try {
-      const respuesta = await axios.get(url);
+      const response = await axios.get(url);
 
       // Destructuring the data
-      const {main: climaData, description} = respuesta.data.weather[0]; // Example: "Clear" "clear sky"
-      let {temp: temperature} = respuesta.data.main;
+      const {main: climaData, description} = response.data.weather[0]; // Example: "Clear" "clear sky"
+      let {temp: temperature} = response.data.main;
 
       setWeather({
         type: climaData,

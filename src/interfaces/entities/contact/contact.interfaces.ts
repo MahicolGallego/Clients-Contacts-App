@@ -1,16 +1,16 @@
 // interfaces
-export interface IContact {
-  id?: string;
+export interface INewContact {
   name: string;
   phone: string;
-  email: string;
+  email?: string | null;
   type: ContactType;
-  photo?: string;
-  location?: {latitude: number | null; longitude: number | null};
+  photo?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 // types
-export type IUpdateContact = Omit<Partial<IContact>, 'id'>;
+export type IUpdateContact = Partial<INewContact>;
 
 //enums
 export enum ContactType {

@@ -1,19 +1,24 @@
 import React, {useState} from 'react';
 import {StyleSheet, View, Modal, TouchableOpacity} from 'react-native';
 import {Avatar, FAB, Text} from 'react-native-paper';
-import {IContact} from '../../../interfaces/entities/contact/contact.interfaces';
 import {DynamicTextInput} from '../shared/DinamicTextInput';
 import {Colors} from '../../theme/global.styles';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamsList} from '../../../routes/StackNavigator';
+import {IContactResponse} from '../../../interfaces/api-responses/contacts-responses';
+import {ISectionListContactData} from '../../../interfaces/for-components/section-list-data.interfaces';
 
 interface props {
-  item: IContact;
-  removeContact: (contact_id: string) => void;
+  item: IContactResponse;
+  contactList: ISectionListContactData[];
+  removeContact: (
+    contact_id: string,
+    contactList: ISectionListContactData[],
+  ) => void;
 }
 
-export const CardContact = ({item, removeContact}: props) => {
+export const CardContact = ({item, contactList, removeContact}: props) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamsList>>();
   const [modalVisible, setModalVisible] = useState(false);
@@ -65,7 +70,7 @@ export const CardContact = ({item, removeContact}: props) => {
                 style={[styles.button, styles.buttonDelete]}
                 onPress={() => {
                   setModalVisible(!modalVisible);
-                  removeContact(item.id as string);
+                  removeContact(item.id as string, contactList);
                 }}
               />
             </View>

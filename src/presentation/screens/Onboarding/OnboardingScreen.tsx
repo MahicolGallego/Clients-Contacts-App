@@ -20,12 +20,5 @@ export const OnboardingScreen = () => {
     return;
   }, []);
 
-  useEffect(() => {
-    if (firstAccess) {
-      DataStorage.setItem('first-access', 'false');
-    }
-    return;
-  }, [firstAccess]);
-
-  return <>{loading ? <LoadingSpinner /> : firstAccess && <Onboarding />}</>;
+  return loading ? <LoadingSpinner /> : firstAccess && <Onboarding />;
 };
