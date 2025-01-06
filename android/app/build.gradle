@@ -1,6 +1,13 @@
 apply plugin: "com.android.application"
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
+
+project.ext.vectoricons = [
+    iconFontNames: [ 'Ionicons.ttf' , 'MaterialIcons.ttf'] // Specify font files
+]
+
+apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -84,6 +91,11 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
+        // Agregar esta línea para el placeholder de API_KEY_GOOGLE_MAPS
+        manifestPlaceholders = [
+            API_KEY_GOOGLE_MAPS: project.ext.env['API_KEY_GOOGLE_MAPS']
+        ]
     }
     signingConfigs {
         debug {

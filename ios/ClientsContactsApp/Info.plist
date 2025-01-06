@@ -2,6 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Select images from phothos</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Capture images</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+  	<string>[REASON]</string>
+  	<key>NSLocationTemporaryUsageDescriptionDictionary</key>
+  	<dict>
+    	<key>YOUR-PURPOSE-KEY</key>
+    	<string>[REASON]</string>
+  	</dict>
+  	<key>NSLocationWhenInUseUsageDescription</key>
+  	<string>[REASON]</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
